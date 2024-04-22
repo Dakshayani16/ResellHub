@@ -12,7 +12,35 @@
             padding: 0;
             background-color: #f4f4f4;
         }
-
+        /* Navigation Bar Styles */
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 30px 0;
+            text-align: right;
+            font-family: 'Poppins', sans-serif;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-left: 20px; /* Adjusted from margin-right to margin-left */
+        }
+        nav ul li:first-child {
+            margin-left: 0; /* No margin for the first child */
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        nav h1 {
+            margin: 0;
+            display: inline;
+            float: left; /* Aligning the logo to the left */
+        }
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -113,7 +141,16 @@
 <body>
     <!-- Navigation Bar -->
     <nav>
-        <!-- Your navigation bar content here -->
+        <div class="container">
+            <h1>VJTI Resell Hub</h1>
+            <ul>
+                <li><a href="index.jsp">Home</a></li>
+                <li><a href="explore.jsp">Explore</a></li>
+                <li><a href="add_product.jsp">Post</a></li>
+                <li><a href="profile.jsp">My Account</a></li>
+                <li><a href="login.jsp">Login</a></li>
+            </ul>
+        </div>
     </nav>
 
     <!-- Main Content Section -->

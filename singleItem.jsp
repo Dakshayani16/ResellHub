@@ -143,65 +143,106 @@
     </nav>
 
     <!-- Banner Section -->
-    <section id="banner">
-        <div class="container">
-            <h2>Welcome to VJTI Resell Hub</h2>
-            <p>Buy and sell items near you. Discover great deals!</p>
-        </div>
-    </section>
-    <section id="search">
-      <div class="container">
-          <form action="#" method="GET">
-              <input type="text" name="search" placeholder="Search...">
-              <button type="submit"><i class="fas fa-search"></i></button>
-          </form>
-      </div>
-  </section>
+    
 
     <!-- Listings Section -->
     <section id="listings">
-        <div class="container" height=5>
-            <div id="carouselExampleCaptions" class="carousel slide">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col">
+        <h1>Title</h1>
+        <h3>Subtitle</h3>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Images -->
+      <div class="col-md-6">
+      <div id="carouselExampleIndicators" class="carousel slide">
   <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="https://www.bigissuenorth.com/wp-content/uploads/2019/05/lyc-campaigns-1600_0_bigissuenorth.jpg" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Find Clothes</h5>
-        <p>Some representative placeholder content for the first slide.</p>
-      </div>
+      <img src="https://m.media-amazon.com/images/I/61O1ACXgWhS._AC_UF1000,1000_QL80_.jpg" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdtA5D7MjfSp3YdsSiMHPWDIULKrtk-1ANhzgNMAdTtnyvpd7mZGyu10ysljakLB7pJ9M&usqp=CAU" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Second slide label</h5>
-        <p>Some representative placeholder content for the second slide.</p>
-      </div>
+      <img src="https://m.media-amazon.com/images/I/61O1ACXgWhS._AC_UF1000,1000_QL80_.jpg" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="https://5.imimg.com/data5/QU/LU/FF/SELLER-3590701/office-stationary-wholesale-500x500.jpg" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Third slide label</h5>
-        <p>Some representative placeholder content for the third slide.</p>
-      </div>
+      <img src="https://m.media-amazon.com/images/I/61O1ACXgWhS._AC_UF1000,1000_QL80_.jpg" class="d-block w-100" alt="...">
     </div>
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
   </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
-</div>
-                <!-- Add more listing items here -->
+
+    </div>
+
+      </div>
+      <!-- Description -->
+      <div class="col-md-6">
+        <!-- Description content -->
+        <p>A calculator is a device or tool designed to perform mathematical calculations quickly and accurately. It typically consists of a keypad for entering numbers and mathematical operations, a display screen to show the input and output, and various function keys for performing specific operations like addition, subtraction, multiplication, division, and more complex functions such as trigonometric or logarithmic calculations.
+
+</p><p>culators with advanced features. They are widely used in various fields including education, engineering, finance, science, and everyday life.</p>
+        <hr>
+        <h3>Condition</h3>
+        <p>Condition Description</p>
+        <p class="card-text"><small class="text-body-secondary">Used for 1 year</small></p>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Ratings -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Ratings</h5>
+            <!-- Insert your rating mechanism here (e.g., stars or progress bar) -->
+            
+            <div class="ratings">
+              <!-- Example using stars -->
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star"></span>
+              <span class="fa fa-star"></span>
             </div>
+    
+            <!-- Example of a heart icon for marking as favorite -->
+            <span class="fa fa-heart"></span>
+            
+          </div>
         </div>
+      </div>
+      <!-- Seller -->
+      <div class="col-md-6">
+        <div class="card mb-3" style="max-width: 540px;">
+          <div class="row g-0">
+            <h3 class="ps-2">Seller</h3>
+            <div class="col-md-4">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0khaUcbpblqXKUuxIpxyGB9VqRKmENQZWjbk8uXGEIg&s" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">Name</h5>
+                <p class="card-text">Branch and details</p>
+                <a href="chatpage.jsp" class="btn btn-primary">Message</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
     </section>
 
     <!-- Footer -->

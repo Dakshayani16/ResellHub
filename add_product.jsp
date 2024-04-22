@@ -148,10 +148,10 @@
         <div class="container1">
             <h1>VJTI Resell Hub</h1>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Categories</a></li>
-                <li><a href="#">Sell</a></li>
-                <li><a href="#">My Account</a></li>
+                <li><a href="index.jsp">Home</a></li>
+                <li><a href="explore.jsp">Explore</a></li>
+                <li><a href="add_product.jsp">Post</a></li>
+                <li><a href="profile.jsp">My Account</a></li>
                 <li><a href="login.jsp">Login</a></li> <!-- Added login button -->
             </ul>
         </div>
