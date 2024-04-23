@@ -13,12 +13,26 @@
             var email = document.getElementsByName('email')[0].value;
             var username = document.getElementsByName('username')[0].value;
             var password = document.getElementsByName('password')[0].value;
+            var phoneNumber = document.getElementsByName('contact_no')[0].value;
     
-            if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === '' || username.trim() === '' || password.trim() === '') {
+            if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === '' || username.trim() === '' || password.trim() === '' || phoneNumber.trim() === '') {
                 alert('Please fill in all required fields.');
                 return false;
             }
-    
+
+            // Validate phone number format (10 digits)
+            var phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                alert('Please enter a valid phone number.');
+                return false;
+            }
+
+            // Validate password length (at least 8 characters)
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long.');
+                return false;
+            }
+
             return true;
         }
     </script>
@@ -136,6 +150,16 @@
             font-size: 16px;
         }
 
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
         button {
             width: 100%;
             padding: 10px;
@@ -180,12 +204,12 @@
     </nav>
     <div class="container">
         <h2>Registration</h2>
-        <form action="registration_process.jsp" method="POST">
+        <form action="registration_process.jsp" method="POST" onsubmit="return validateForm()">
             <input type="text" name="first_name" placeholder="First Name" required>
             <input type="text" name="middle_name" placeholder="Middle Name">
             <input type="text" name="last_name" placeholder="Last Name" required>
             <input type="email" name="email" placeholder="Email Address" required>
-            <input type="text" name="contact_no" placeholder="Contact Number">
+            <input type="tel" name="contact_no" placeholder="Contact Number">
             <input type="text" name="branch" placeholder="Branch">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
