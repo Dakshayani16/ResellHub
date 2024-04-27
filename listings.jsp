@@ -157,53 +157,45 @@
           </form>
       </div>
   </section>
-    <div class="slideshow-container">
-
 
     <!-- Listings Section -->
     <section id="listings">
-        <div class="container" height=5>
-            <div id="carouselExampleCaptions" class="carousel slide">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Title</h1>
+      <h3>Subtitle</h3>
+    </div>
   </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="https://www.bigissuenorth.com/wp-content/uploads/2019/05/lyc-campaigns-1600_0_bigissuenorth.jpg" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Find Clothes</h5>
-        <p>Some representative placeholder content for the first slide.</p>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdtA5D7MjfSp3YdsSiMHPWDIULKrtk-1ANhzgNMAdTtnyvpd7mZGyu10ysljakLB7pJ9M&usqp=CAU" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Second slide label</h5>
-        <p>Some representative placeholder content for the second slide.</p>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="https://5.imimg.com/data5/QU/LU/FF/SELLER-3590701/office-stationary-wholesale-500x500.jpg" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Third slide label</h5>
-        <p>Some representative placeholder content for the third slide.</p>
+ <div class="row row-cols-1 row-cols-md-3 g-4">
+
+
+ <!--jsp loop-->
+  <div class="col">
+    <div class="card h-100">
+      <img src="..." class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
       </div>
     </div>
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
+
+  <!--jsp loop-->
+  
 </div>
-                <!-- Add more listing items here -->
-            </div>
-        </div>
+  
+
+    <!-- Add more cards as needed -->
+  </div>
+  <div class="row justify-content-end">
+    <div class="col-auto">
+      <a href="#" class="btn btn-link">More</a>
+    </div>
+  </div>
+
+</div>
+
     </section>
 
     <!-- Footer -->
