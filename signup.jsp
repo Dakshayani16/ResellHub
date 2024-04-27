@@ -8,19 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
         function validateForm() {
-            var firstName = document.getElementsByName('first_name')[0].value;
-            var lastName = document.getElementsByName('last_name')[0].value;
-            var email = document.getElementsByName('email')[0].value;
-            var username = document.getElementsByName('username')[0].value;
-            var password = document.getElementsByName('password')[0].value;
-    
-            if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === '' || username.trim() === '' || password.trim() === '') {
-                alert('Please fill in all required fields.');
-                return false;
-            }
-    
-            return true;
-        }
+    var firstName = document.getElementsByName('first_name')[0].value;
+    var lastName = document.getElementsByName('last_name')[0].value;
+    var email = document.getElementsByName('email')[0].value;
+    var username = document.getElementsByName('username')[0].value;
+    var password = document.getElementsByName('password')[0].value;
+    var confirmPassword = document.getElementsByName('confpassword')[0].value;
+
+    // Check if any required field is empty
+    if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === '' || username.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+        alert('Please fill in all required fields.');
+        return false;
+    }
+
+    // Check if password and confirm password match
+    if (password !== confirmPassword) {
+        alert('Password and Confirm Password do not match.');
+        return false;
+    }
+
+    // Check if password is at least 6 characters long and contains at least one special character
+    if (password.length < 6 || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        alert('Password must be at least 6 characters long and contain at least one special character.');
+        return false;
+    }
+
+    return true;
+}
     </script>
     
     <style>
@@ -180,7 +194,7 @@
     </nav>
     <div class="container">
         <h2>Registration</h2>
-        <form action="registration_process.jsp" method="POST">
+        <form action="registration_process.jsp" method="POST" onsubmit="return validateForm()">
             <input type="text" name="first_name" placeholder="First Name" required>
             <input type="text" name="middle_name" placeholder="Middle Name">
             <input type="text" name="last_name" placeholder="Last Name" required>
@@ -189,6 +203,7 @@
             <input type="text" name="branch" placeholder="Branch">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confpassword" placeholder="Confirm Password" required>
             <button type="submit">Register</button>
         </form>
         <div class="login-link">

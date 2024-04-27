@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %> --%>
-<%@ page import="java.util.Enumeration,java.sql.*" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,25 +12,19 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif; /* Use Poppins font */
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            height: 50%;
-        }
-
-        /* Navigation Bar Styles */
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    /* Navigation Bar Styles */
         nav {
             background-color: #333;
             color: #fff;
             padding: 30px 0;
             text-align: right;
+            font-family: 'Poppins', sans-serif;
         }
         nav ul {
             list-style: none;
@@ -56,53 +47,80 @@
             display: inline;
             float: left; /* Aligning the logo to the left */
         }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-        }
-#login-form {
-    margin: 50px auto;
-    width: 400px;
-    padding-top: 20px;
-    padding-right: 1px;
-    padding-bottom: 20px;
-    padding-left: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-
-#login-form h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-#login-form input[type="text"],
-#login-form input[type="password"],
-#login-form input[type="submit"] {
-    box-sizing: border-box; /* Include padding and border in the width */
-    width: calc(100% - 22px); /* Adjusted width */
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 16px;
-}
-
-#login-form input[type="submit"] {
-    background-color: #333;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-
-        
-    </style>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .chat-box {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+    }
+    .chat-header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .chat-header h2 {
+      margin: 0;
+    }
+    .chat-messages {
+      padding: 20px;
+      height: 300px; /* Set a fixed height or use overflow-y: auto; for scrolling */
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 20px;
+    }
+    .message.sent {
+      text-align: right;
+    }
+    .message.received {
+      text-align: left;
+    }
+    .message p {
+      background-color: #f2f2f2;
+      padding: 10px;
+      border-radius: 10px;
+      display: inline-block;
+      max-width: 70%;
+    }
+    .message.sent p {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .message.received p {
+      background-color: #ddd;
+    }
+    .chat-footer {
+      padding: 10px;
+      border-top: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+    }
+    .chat-footer input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .chat-footer button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -119,30 +137,34 @@
         </div>
     </nav>
 
-   
-<div class="container">
-    <form id="login-form" action="login_process.jsp" method="post">
-        <h2>Login</h2>
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="submit" value="Login">
-        <p>Don't have an account? <a href="signup.jsp">Sign Up</a></p>
-    </form>
+    <!-- Banner Section -->
     
-</div>
-<%   String message= (String) request.getParameter("message"); %>
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Alert!</strong> <%= message %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-<%
 
-    if(message!=null){ %>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Alert!</strong> <%= message %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Listings Section -->
+    <div class="container">
+    <div class="chat-box">
+      <div class="chat-header">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0khaUcbpblqXKUuxIpxyGB9VqRKmENQZWjbk8uXGEIg&s" alt="Receiver Profile Picture">
+        <h2>Receiver Name</h2>
+      </div>
+      <div class="chat-messages">
+        <div class="message sent">
+          <p>Hey, how are you?</p>
         </div>
-    <% } %>
+        <div class="message received">
+          <p>I'm good, thanks! How about you?</p>
+        </div>
+        <!-- More chat messages here -->
+      </div>
+      <div class="chat-footer">
+        <input type="text" placeholder="Type your message...">
+        <button>Send</button>
+      </div>
+    </div>
+  </div>
+    
+
+    <!-- Footer -->
     <footer>
         <div class="container">
             <p>&copy; 2024 VJTI Resell Hub. All rights reserved.</p>
