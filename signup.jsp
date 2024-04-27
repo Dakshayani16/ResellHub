@@ -150,6 +150,16 @@
             font-size: 16px;
         }
 
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
         button {
             width: 100%;
             padding: 10px;
@@ -195,11 +205,12 @@
     <div class="container">
         <h2>Registration</h2>
         <form action="registration_process.jsp" method="POST" onsubmit="return validateForm()">
+        <form action="registration_process.jsp" method="POST" onsubmit="return validateForm()">
             <input type="text" name="first_name" placeholder="First Name" required>
             <input type="text" name="middle_name" placeholder="Middle Name">
             <input type="text" name="last_name" placeholder="Last Name" required>
             <input type="email" name="email" placeholder="Email Address" required>
-            <input type="text" name="contact_no" placeholder="Contact Number">
+            <input type="tel" name="contact_no" placeholder="Contact Number">
             <input type="text" name="branch" placeholder="Branch">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
