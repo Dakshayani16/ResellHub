@@ -20,11 +20,11 @@ try {
     stmt2 = conn.prepareStatement("SELECT * FROM user WHERE username = ?;");
     stmt2.setString(1, username);
     // stmt2.setString(2, password);
-    rs2 = stmt.executeQuery();
+    rs2 = stmt2.executeQuery();
 
-    if (rs.next()) {
+    if (rs.next() && rs2.next()) {
         // HttpSession session = request.getSession();
-        String name= rs2.getString("first_name")+rs2.getString("middle_name")+rs2.getString("first_name");
+        String name= rs2.getString("first_name")+rs2.getString("middle_name")+rs2.getString("last_name");
         session.setAttribute("username", username);
         session.setAttribute("password", password);
         session.setAttribute("name", name );
