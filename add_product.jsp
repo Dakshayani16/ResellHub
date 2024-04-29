@@ -159,7 +159,7 @@
 
     <div class="container">
         <h2>Add Product</h2>
-        <form action="add_product_process.jsp" method="POST">
+        <form action="addproduct_process.jsp" method="POST">
             <input type="text" name="product_name" placeholder="Product Name" required>
             <input type="number" name="price" placeholder="Price" step="0.01" required>
             <textarea name="description" placeholder="Description" rows="4" required></textarea>
@@ -226,6 +226,10 @@
 
             </div>
             <input type="file" name="image" accept="image/*" class="image-upload" required>
+
+            <br><hr><h2>Give Condition of Product</h2><br>
+            <input type="text" name="buy_year" placeholder="Product Bought in year" required>
+            <textarea name="condition_description" placeholder="Description of its condition" rows="4" required></textarea>
             <button type="submit">Add Product</button>
         </form>
         <div class="login-link">
