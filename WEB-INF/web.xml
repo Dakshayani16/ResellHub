@@ -25,7 +25,14 @@
         <servlet-name>process</servlet-name>
         <url-pattern>/process.jsp</url-pattern>
     </servlet-mapping>
-
+    <multipart-config>
+        <!-- Specify the maximum size of a file uploaded -->
+        <max-file-size>1048576</max-file-size> <!-- 1 MB -->
+        <!-- Specify the maximum size of all files uploaded in a single request -->
+        <max-request-size>2097152</max-request-size> <!-- 2 MB -->
+        <!-- Specify the location where uploaded files will be stored -->
+        <!-- <location>/path/to/store/uploads</location> -->
+    </multipart-config>
     <!-- Resource reference for MariaDB datasource -->
     <resource-ref>
         <description>MariaDB Datasource</description>
