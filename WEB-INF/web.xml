@@ -6,25 +6,25 @@
 
     <display-name>project1</display-name>
 
-    <!-- Servlet mapping for index.jsp -->
+   <servlet>
+        <servlet-name>AddProduct</servlet-name>
+        <servlet-class>AddProduct</servlet-class>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>20848820</max-file-size>
+            <max-request-size>418018841</max-request-size>
+            <file-size-threshold>1048576</file-size-threshold>
+        </multipart-config>
+    </servlet>
     <servlet>
-        <servlet-name>index</servlet-name>
-        <jsp-file>/index.jsp</jsp-file>
+        <servlet-name>AddProduct</servlet-name>
+        <servlet-class>AddProduct</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>index</servlet-name>
-        <url-pattern>/index.jsp</url-pattern>
+        <servlet-name>AddProduct</servlet-name>
+        <url-pattern>/AddProduct</url-pattern>
     </servlet-mapping>
-
-    <!-- Servlet mapping for process.jsp -->
-    <servlet>
-        <servlet-name>process</servlet-name>
-        <jsp-file>/process.jsp</jsp-file>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>process</servlet-name>
-        <url-pattern>/process.jsp</url-pattern>
-    </servlet-mapping>
+    <!-- Multipart configuration -->
     <multipart-config>
         <!-- Specify the maximum size of a file uploaded -->
         <max-file-size>1048576</max-file-size> <!-- 1 MB -->
@@ -33,6 +33,8 @@
         <!-- Specify the location where uploaded files will be stored -->
         <!-- <location>/path/to/store/uploads</location> -->
     </multipart-config>
+
+       
     <!-- Resource reference for MariaDB datasource -->
     <resource-ref>
         <description>MariaDB Datasource</description>

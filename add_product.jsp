@@ -159,69 +159,69 @@
 
     <div class="container">
         <h2>Add Product</h2>
-        <form action="addproduct_process.jsp" method="POST">
+        <form action="AddProduct" method="POST" enctype="multipart/form-data">
             <input type="text" name="product_name" placeholder="Product Name" required>
             <input type="number" name="price" placeholder="Price" step="0.01" required>
             <textarea name="description" placeholder="Description" rows="4" required></textarea>
             <div class="category-checkboxes">
-                <input type="checkbox" id="stationery" name="category[]" value="Stationery">
+                <input type="checkbox" id="stationery" name="category" value="Stationery">
 <label for="stationery">Stationery</label><br>
 
-<input type="checkbox" id="electronics" name="category[]" value="Electronics">
+<input type="checkbox" id="electronics" name="category" value="Electronics">
 <label for="electronics">Electronics</label><br>
 
-<input type="checkbox" id="clothing" name="category[]" value="Clothing">
+<input type="checkbox" id="clothing" name="category" value="Clothing">
 <label for="clothing">Clothing</label><br>
 
-<input type="checkbox" id="lab_equipment" name="category[]" value="Lab Equipment">
+<input type="checkbox" id="lab_equipment" name="category" value="Lab Equipment">
 <label for="lab_equipment">Lab Equipment</label><br>
 
-<input type="checkbox" id="books" name="category[]" value="Books">
+<input type="checkbox" id="books" name="category" value="Books">
 <label for="books">Books</label><br>
 
-<input type="checkbox" id="sports_equipment" name="category[]" value="Sports Equipment">
+<input type="checkbox" id="sports_equipment" name="category" value="Sports Equipment">
 <label for="sports_equipment">Sports Equipment</label><br>
 
-<input type="checkbox" id="musical_instruments" name="category[]" value="Musical Instruments">
+<input type="checkbox" id="musical_instruments" name="category" value="Musical Instruments">
 <label for="musical_instruments">Musical Instruments</label><br>
 
-<input type="checkbox" id="furniture" name="category[]" value="Furniture">
+<input type="checkbox" id="furniture" name="category" value="Furniture">
 <label for="furniture">Furniture</label><br>
 
-<input type="checkbox" id="appliances" name="category[]" value="Appliances">
+<input type="checkbox" id="appliances" name="category" value="Appliances">
 <label for="appliances">Appliances</label><br>
 
-<input type="checkbox" id="art_supplies" name="category[]" value="Art Supplies">
+<input type="checkbox" id="art_supplies" name="category" value="Art Supplies">
 <label for="art_supplies">Art Supplies</label><br>
 
-<input type="checkbox" id="shoes" name="category[]" value="Shoes">
+<input type="checkbox" id="shoes" name="category" value="Shoes">
 <label for="shoes">Shoes</label><br>
 
-<input type="checkbox" id="bags_backpacks" name="category[]" value="Bags & Backpacks">
+<input type="checkbox" id="bags_backpacks" name="category" value="Bags & Backpacks">
 <label for="bags_backpacks">Bags & Backpacks</label><br>
 
-<input type="checkbox" id="cosmetics" name="category[]" value="Cosmetics">
+<input type="checkbox" id="cosmetics" name="category" value="Cosmetics">
 <label for="cosmetics">Cosmetics</label><br>
 
-<input type="checkbox" id="kitchenware" name="category[]" value="Kitchenware">
+<input type="checkbox" id="kitchenware" name="category" value="Kitchenware">
 <label for="kitchenware">Kitchenware</label><br>
 
-<input type="checkbox" id="mobile_accessories" name="category[]" value="Mobile Accessories">
+<input type="checkbox" id="mobile_accessories" name="category" value="Mobile Accessories">
 <label for="mobile_accessories">Mobile Accessories</label><br>
 
-<input type="checkbox" id="watches" name="category[]" value="Watches">
+<input type="checkbox" id="watches" name="category" value="Watches">
 <label for="watches">Watches</label><br>
 
-<input type="checkbox" id="sunglasses" name="category[]" value="Sunglasses">
+<input type="checkbox" id="sunglasses" name="category" value="Sunglasses">
 <label for="sunglasses">Sunglasses</label><br>
 
-<input type="checkbox" id="fitness_equipment" name="category[]" value="Fitness Equipment">
+<input type="checkbox" id="fitness_equipment" name="category" value="Fitness Equipment">
 <label for="fitness_equipment">Fitness Equipment</label><br>
 
-<input type="checkbox" id="gaming_accessories" name="category[]" value="Gaming Accessories">
+<input type="checkbox" id="gaming_accessories" name="category" value="Gaming Accessories">
 <label for="gaming_accessories">Gaming Accessories</label><br>
 
-<input type="checkbox" id="home_decor" name="category[]" value="Home Decor">
+<input type="checkbox" id="home_decor" name="category" value="Home Decor">
 <label for="home_decor">Home Decor</label><br>
 
             </div>

@@ -12,7 +12,10 @@
 		 Connection con = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
-        	con = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
+        	//con = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+			con = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+		
+		}catch(Exception e){out.print(e+"");}
 		out.println("<html><body>");
 		String first_name=request.getParameter("first_name");
 		String last_name=request.getParameter("last_name");
