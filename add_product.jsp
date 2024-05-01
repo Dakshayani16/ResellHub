@@ -152,7 +152,9 @@
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
                 <li><a href="profile.jsp">My Account</a></li>
-                <li><a href="login.jsp">Login</a></li> <!-- Added login button -->
+                <% if(session.getAttribute("username")==null){ %>
+                <li><a href="login.jsp">Login</a></li>
+                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
         </div>
     </nav>
