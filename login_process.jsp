@@ -1,5 +1,5 @@
 <%@ page import="java.sql.*" %>
-<%@ page import="javax.servlet.http.HttpSession" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 <%
 String username = request.getParameter("username");
 String password = request.getParameter("password");
