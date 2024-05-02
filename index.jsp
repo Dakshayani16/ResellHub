@@ -134,7 +134,7 @@
             <h1>VJTI Resell Hub</h1>
             <ul>
                 <li><a href="index.jsp">Home</a></li>
-                <li><a href="explore.jsp">Explore</a></li>
+                <li><a href="explore1.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
                 <li><a href="upload.jsp">My Account</a></li>
                 <% if(session.getAttribute("username")==null){ %>
