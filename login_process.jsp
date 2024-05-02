@@ -25,8 +25,9 @@ try {
 
     if (rs.next() && rs2.next()) {
         // HttpSession session = request.getSession();
+        String userId=""+rs2.getInt("user_id");
         String name= rs2.getString("first_name")+rs2.getString("middle_name")+rs2.getString("last_name");
-        session.setAttribute("userID", rs2.getString("user_id"));
+        session.setAttribute("userID", userId);
         session.setAttribute("username", username);
         session.setAttribute("password", password);
         session.setAttribute("name", name );

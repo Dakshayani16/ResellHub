@@ -136,10 +136,15 @@
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore1.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
-                <li><a href="upload.jsp">My Account</a></li>
+
+                <li><a href="profile.jsp">My Account</a></li>
+
+
+<!--                 <li><a href="upload.jsp">My Account</a></li> -->
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
         </div>
     </nav>
@@ -160,8 +165,15 @@
       </div>
   </section>
     <div class="slideshow-container">
+<%   String message= (String) request.getParameter("message"); %>
+<%
 
-
+    if(message!=null){ %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Alert!</strong> <%= message %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <% } %>
     <!-- Listings Section -->
     <section id="listings">
         <div class="container" height=5>

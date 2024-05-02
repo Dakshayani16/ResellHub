@@ -21,6 +21,7 @@ int buy_year = Integer.parseInt(request.getParameter("buy_year"));
 String description = request.getParameter("description");
 String[] categories = request.getParameterValues("category[]");
 int condition_id=0;
+
 int user_id=Integer.parseInt((String) session.getAttribute("userID"));
 try {
     Class.forName("org.mariadb.jdbc.Driver");
@@ -63,13 +64,13 @@ if (affectedRows > 0) {
         }
     }
 
-    Part filePart = request.getPart("image");
-    InputStream fileContent = filePart.getInputStream();
-    String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
-    PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
-    imageStmt.setInt(1, productId);
-    imageStmt.setBlob(2, fileContent);
-    imageStmt.executeUpdate();
+    // Part filePart = request.getPart("image");
+    // InputStream fileContent = filePart.getInputStream();
+    // String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
+    // PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
+    // imageStmt.setInt(1, productId);
+    // imageStmt.setBlob(2, fileContent);
+    // imageStmt.executeUpdate();
 
     conn.close();
 } catch (Exception e) {
@@ -78,8 +79,11 @@ if (affectedRows > 0) {
 %>
 <%
         response.setIntHeader("Refresh", 5);
-        response.sendRedirect("index.jsp");
-    %> 
+
+        response.sendRedirect("index.jsp?message=Product added!");
+    %>
+
+
 
 </body>
 
