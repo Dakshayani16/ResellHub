@@ -1,6 +1,7 @@
-<%-- <%@ page import="java.sql.*" %> --%>
+<%@ page import="java.sql.*" %> 
 <%@ page import="java.io.*" %>
-<%@ page import="java.util.*" %><%@ page import="java.io.*" %>
+<%@ page import="java.util.*" %>
+<%@ page import="java.io.*" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="javax.servlet.http.*" %>
 <%@ page import="org.apache.commons.fileupload.*" %>
@@ -24,7 +25,8 @@ int condition_id=0;
 int user_id=Integer.parseInt((String) session.getAttribute("userID"));
 try {
     Class.forName("org.mariadb.jdbc.Driver");
-    Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+    //Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+    Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
     String insertProductConditionQuery = "INSERT INTO condition_of_product (buy_year, description) VALUES (?, ?)";
     PreparedStatement productStmt1 = conn.prepareStatement(insertProductConditionQuery, Statement.RETURN_GENERATED_KEYS);
     productStmt1.setInt(1, buy_year);
@@ -77,8 +79,11 @@ if (affectedRows > 0) {
 %>
 <%
         response.setIntHeader("Refresh", 5);
+
         response.sendRedirect("index.jsp?message=Product added!");
     %>
+
+
 
 </body>
 
