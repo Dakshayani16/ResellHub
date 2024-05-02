@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration,java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,7 +118,7 @@
         .listing-item p {
             margin-top: 5px;
         }
-
+        
         /* Footer Styles */
         footer {
             background-color: #333;
@@ -137,7 +138,9 @@
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
                 <li><a href="profile.jsp">My Account</a></li>
+                <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
+                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
         </div>
     </nav>
@@ -149,6 +152,9 @@
             <p>Buy and sell items near you. Discover great deals!</p>
         </div>
     </section>
+
+
+
     <section id="search">
       <div class="container">
           <form action="#" method="GET">
@@ -157,206 +163,94 @@
           </form>
       </div>
   </section>
+   <!-- Listings Section -->
+                      <section id="listings">
+                          <div class="container">
+<%
+     Connection conn = null;
+		ResultSet result=null;
+		try{Class.forName("org.mariadb.jdbc.Driver");
+        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
+    Statement stmt = conn.createStatement();
+    ResultSet rs = stmt.executeQuery("SELECT category_id, category, no_of_items FROM product_category");
+    String categoryname="";
+    int numofitem=0;
+    while (rs.next()) {
+      categoryname=rs.getString("category");
+      numofitem=rs.getInt("no_of_items");
+%>
+<%-- One category --%>
+                   
+                    <div class="row mb-4">
+                      <div class="col">
+                        <h1><%=categoryname%></h1>
+                        <h3>Over <%=numofitem%> items</h3>
+                      </div>
+                    </div>
+                    <div class="row">
 
-    <!-- Listings Section -->
-    <section id="listings">
-        <div class="container">
-  <div class="row mb-4">
-    <div class="col">
-      <h1>Title</h1>
-      <h3>Subtitle</h3>
-    </div>
+<%
+        int categoryId = rs.getInt("category_id");
+        ResultSet rsProducts = stmt.executeQuery("SELECT product_id FROM productcategories WHERE category_id = " + categoryId+" Limit 3;");
+
+        while (rsProducts.next()) {
+            int productId = rsProducts.getInt("product_id");
+            ResultSet rsProductDetails = stmt.executeQuery("SELECT product_name, price, description FROM Products WHERE product_id = " + productId);
+            String productname="";
+            int price=0;
+            String description="";
+            String description1="";
+            if (rsProductDetails.next()) {
+
+              productname=rsProductDetails.getString("product_name");
+              price=rsProductDetails.getInt("price");
+              description1=rsProductDetails.getString("description");
+              description=description1.substring(0,Math.min(description1.length(),20));
+              String url="singleItem.jsp?item="+productId;
+%>
+                
+
+                    <%-- One card --%>
+                    
+                      <div class="col-md-3 mb-2">
+
+                        <div class="card" style="width: 18rem;">
+                          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title"><%=productname%></h5>
+                            <p class="card-text"><%=description%>...<a href="" class="btn btn-link">more</a></p>
+                            <a href=<%=url%> class="btn btn-primary">Rs. <%=price%></a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <%-- One card --%>
+                      
+
+                      <!-- Add more cards as needed -->
+                    
+
+<%
+            }
+
+        }
+
+  %>
+   <%-- card --%>
   </div>
-  <div class="row">
-    <div class="col-md-3 mb-2">
-
-      <div class="card" style="width: 18rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="singleItem.jsp" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="singleItem.jsp" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="singleItem.jsp" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add more cards as needed -->
-  </div>
-  <div class="row justify-content-end">
-    <div class="col-auto">
-      <a href="#" class="btn btn-link">More</a>
-    </div>
-  </div>
-
-<!-- second category-->
-
-<div class="row mb-4">
-    <div class="col">
-      <h1>Title</h1>
-      <h3>Subtitle</h3>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add more cards as needed -->
-  </div>
-  <div class="row justify-content-end">
-    <div class="col-auto">
-      <a href="#" class="btn btn-link">More</a>
-    </div>
-  </div>
-
-
-
-<!-- Third category-->
-<div class="row mb-4">
-    <div class="col">
-      <h1>Title</h1>
-      <h3>Subtitle</h3>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add more cards as needed -->
-  </div>
-  <div class="row justify-content-end">
-    <div class="col-auto">
-      <a href="#" class="btn btn-link">More</a>
-    </div>
-  </div>
-
-
-<!--Fourth category-->
-
-<div class="row mb-4">
-    <div class="col">
-      <h1>Title</h1>
-      <h3>Subtitle</h3>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 mb-2">
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add more cards as needed -->
-  </div>
-  <div class="row justify-content-end">
-    <div class="col-auto">
-      <a href="#" class="btn btn-link">More</a>
-    </div>
-  </div>
-
+                    <div class="row justify-content-end">
+                      <div class="col-auto">
+                        <a href="listing.jsp?category="+<%=categoryId%> class="btn btn-link">More</a>
+                      </div>
+                    </div>
+                  <%-- One category --%>
+  
+<%
+    }
+%>
 </div>
+</section>
 
-    </section>
 
     <!-- Footer -->
     <footer>

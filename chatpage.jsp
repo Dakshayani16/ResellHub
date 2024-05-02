@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%@ page contentType="text/html;charset" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  
+    
+    
+    
     <style>
     /* Basic styling */
     body {
@@ -122,6 +127,42 @@
     }
   </style>
 </head>
+<%
+    Connection conn = null;
+		ResultSet result=null;
+		try{Class.forName("org.mariadb.jdbc.Driver");
+        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
+    
+    
+    String send_message = request.getParameter("send_message");
+    String curr_user=  (String) session.getAttribute("userID");
+    String conversationId = request.getParameter("convo");
+
+    // Initialize sender_id and buyer_id variables
+    String sellerId = "";
+    
+     String selectQuery2 = "SELECT seller_id FROM conversation WHERE conversation_id = ?;";
+    try{ PreparedStatement pstmt = conn.prepareStatement(selectQuery2);
+        pstmt.setString(1, conversationId);
+        ResultSet rs = pstmt.executeQuery();
+      if(rs.next()){
+        sellerId=""+rs.getInt("seller_id");
+      }
+    }catch(Exception e){out.print(e);}
+    
+    
+    if(send_message!=null){
+      String query="INSERT INTO messages (conversation_id, sender_id, receiver_id, message) VALUES ( "+conversationId+","+ curr_user + ", " + sellerId + ", '" + send_message + "' );";
+    try {
+      
+        PreparedStatement pst = conn.prepareStatement(query);
+        pst.executeUpdate(); 
+       
+    } catch (Exception e) {
+        out.println("Error: " + query);
+    }}
+%>
+
 <body>
     <!-- Navigation Bar -->
     <nav>
@@ -132,37 +173,72 @@
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
                 <li><a href="profile.jsp">My Account</a></li>
+                <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
+                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
         </div>
     </nav>
 
     <!-- Banner Section -->
+    <%
     
+		
+    // Get the conversation_id from request parameter
+    ResultSet rs=null;
+     String selectQuery = "SELECT sender_id, receiver_id, message, timestamp FROM messages WHERE conversation_id = ? ORDER BY timestamp ASC";
+    try (PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
+        pstmt.setString(1, conversationId);
+        rs = pstmt.executeQuery();
+        }catch(Exception e){out.print(e);}
+        
+    
+%>
 
-    <!-- Listings Section -->
+
+
+<!-- Chat container -->
+ <!-- Listings Section -->
     <div class="container">
     <div class="chat-box">
       <div class="chat-header">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0khaUcbpblqXKUuxIpxyGB9VqRKmENQZWjbk8uXGEIg&s" alt="Receiver Profile Picture">
-        <h2>Receiver Name</h2>
+        <h2>Receiver</h2>
       </div>
       <div class="chat-messages">
+    <%
+        // Loop through the result set and display messages
+        while (rs.next()) {
+            String senderId = ""+rs.getInt("sender_id");
+            String receiverId =""+ rs.getInt("receiver_id");
+            String message = rs.getString("message");
+            // out.print(""+senderId+receiverId+curr_user);
+            if(senderId.equals(curr_user)){
+    %>
         <div class="message sent">
-          <p>Hey, how are you?</p>
+          <p><%=message%></p>
         </div>
+    <% }else{ %>
         <div class="message received">
-          <p>I'm good, thanks! How about you?</p>
+          <p><%=message%></p>
         </div>
-        <!-- More chat messages here -->
+      <% } %>
+      <%-- else end --%>
+      <%
+        }
+    %>
+    <%-- while end --%>        
       </div>
+
       <div class="chat-footer">
-        <input type="text" placeholder="Type your message...">
-        <button>Send</button>
+      <form method="post">
+        <input type="text" name="send_message" placeholder="Type your message...">
+        <input type="submit" value="Send">
+      </form>
       </div>
     </div>
-  </div>
-    
+  
+    </div>
 
     <!-- Footer -->
     <footer>
