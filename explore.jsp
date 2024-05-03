@@ -174,11 +174,13 @@
                    
                    Statement stmt = conn.createStatement();
                    ResultSet rs = stmt.executeQuery("SELECT category_id, category, no_of_items FROM product_category");
-                   
+                
                    while (rs.next()) {
                        int categoryId = rs.getInt("category_id");
                        String categoryName = rs.getString("category");
                        int numofitem = rs.getInt("no_of_items");
+                       out.print("k");
+
            %>
            <div class="row mb-4">
                <div class="col">
@@ -188,7 +190,7 @@
            </div>
            <div class="row">
                <%  
-                   PreparedStatement pstmtProducts = conn.prepareStatement("SELECT product_id FROM productcategories WHERE category_id = ? LIMIT 5");
+                   PreparedStatement pstmtProducts = conn.prepareStatement("SELECT product_id FROM productcategories WHERE category_id = ?");
                    pstmtProducts.setInt(1, categoryId);
                    ResultSet rsProducts = pstmtProducts.executeQuery();
 
@@ -213,8 +215,11 @@
                            String imgBase64 = "";
                            if (rsImage.next()) {
                                Blob imageBlob = rsImage.getBlob("image");
-                               byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+                               if(imageBlob!=null){
+                                byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
                                imgBase64 = Base64.getEncoder().encodeToString(imgData);
+                               }
+                               
                            }
                %>
                <!-- Card for product -->
@@ -242,6 +247,7 @@
            <%  
                    }
                } catch (Exception e) {
+                out.print(e);
                    e.printStackTrace();
                } finally {
                    if (conn != null) {
