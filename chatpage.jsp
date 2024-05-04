@@ -131,7 +131,10 @@
     Connection conn = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
-        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
+        	//conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+          conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/mydatabase", "root", "root");
+        
+        }catch(Exception e){out.print(e+"");}
     
     
     String send_message = request.getParameter("send_message");

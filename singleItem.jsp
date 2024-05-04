@@ -172,7 +172,10 @@
     Connection conn = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
-        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
+        	//conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+        
+        }catch(Exception e){out.print(e+"");}
     
     PreparedStatement ps = conn.prepareStatement("SELECT product_name, seller_id, condition_id, description, price FROM Products WHERE product_id = ?");
     ps.setString(1, product_id);
