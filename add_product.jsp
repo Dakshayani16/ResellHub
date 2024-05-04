@@ -147,7 +147,7 @@
 <% if(session.getAttribute("username")==null){ 
  
 			String url="login.jsp?message="+"Please Login to Continue";
-        	response.sendRedirect(url);
+        	response.sendRedirect(url);}
 %>
     <nav>
 
