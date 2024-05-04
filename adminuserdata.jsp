@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -150,7 +151,7 @@
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
+ <!-- Navigation Bar -->
     <nav>
         <div class="container">
             <h1>VJTI Resell Hub</h1>
@@ -173,16 +174,114 @@
         </div>
     </section>
 
-<%-- Dashboard --%>
-    
+    <div class="container">
+    <br>
+        <h1>User Management</h1>
+        <hr><br>
+        <!-- Display User Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Branch</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Fetch and display user records -->
+                <%
+                    Connection conn = null;
+                    Statement stmt = null;
+                    ResultSet rs = null;
 
-    <!-- Footer -->
+                    try {
+                        // Connect to the database
+                        Class.forName("org.mariadb.jdbc.Driver");
+                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+
+                        // Execute the query to fetch user records
+                        String query = "SELECT * FROM user";
+                        stmt = conn.createStatement();
+                        rs = stmt.executeQuery(query);
+
+                        // Display user records in a table
+                        while (rs.next()) {
+                            String userID = ""+rs.getInt("user_id");
+                            String firstName = rs.getString("first_name");
+                            String middleName = rs.getString("first_name");
+                            String lastName = rs.getString("last_name");
+                            String email = rs.getString("email");
+                            String contact = rs.getString("contact_no");
+                            String branch = rs.getString("branch");
+                            String username = rs.getString("username");
+
+                %>
+                <tr>
+                    <td><%= userID %></td>
+                    <td><%= firstName %></td>
+                    <td><%= middleName %></td>
+                    <td><%= lastName %></td>
+                    <td><%= email %></td>
+                    <td><%= contact %></td>
+                    <td><%= branch %></td>
+                    <td><%= username %></td>
+                    <td>
+                        <!-- Delete button -->
+                        <form method="post" action="deleteUser.jsp">
+                            <input type="hidden" name="userID" value="<%= userID %>">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        <!-- Update button -->
+                        <form method="post" action="updateUser.jsp">
+                            <input type="hidden" name="userID" value="<%= userID %>">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                <%
+                        }
+                    } catch (Exception e) {
+                        out.print(e);
+                    } finally {
+                        // Close resources
+                        if (rs != null) {
+                            try {
+                                rs.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (stmt != null) {
+                            try {
+                                stmt.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (conn != null) {
+                            try {
+                                conn.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                %>
+            </tbody>
+        </table>
+    </div>
+
     <footer>
         <div class="container">
             <p>&copy; 2024 VJTI Resell Hub. All rights reserved.</p>
         </div>
     </footer>
-    
     
 </body>
 </html>
