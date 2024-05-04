@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Enumeration,java.sql.*" %>
+<%@ page import="java.util.Base64" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,8 +154,6 @@
         </div>
     </section>
 
-
-
     <section id="search">
       <div class="container">
           <form action="#" method="GET">
@@ -163,94 +162,105 @@
           </form>
       </div>
   </section>
+
    <!-- Listings Section -->
-                      <section id="listings">
-                          <div class="container">
-<%
-     Connection conn = null;
-		ResultSet result=null;
-		try{Class.forName("org.mariadb.jdbc.Driver");
-        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
-    Statement stmt = conn.createStatement();
-    ResultSet rs = stmt.executeQuery("SELECT category_id, category, no_of_items FROM product_category");
-    String categoryname="";
-    int numofitem=0;
-    while (rs.next()) {
-      categoryname=rs.getString("category");
-      numofitem=rs.getInt("no_of_items");
-%>
-<%-- One category --%>
+   <section id="listings">
+       <div class="container">
+           <%  
+               Connection conn = null;
+               try {
+                   Class.forName("org.mariadb.jdbc.Driver");
+                   conn= DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
                    
-                    <div class="row mb-4">
-                      <div class="col">
-                        <h1><%=categoryname%></h1>
-                        <h3>Over <%=numofitem%> items</h3>
-                      </div>
-                    </div>
-                    <div class="row">
-
-<%
-        int categoryId = rs.getInt("category_id");
-        ResultSet rsProducts = stmt.executeQuery("SELECT product_id FROM productcategories WHERE category_id = " + categoryId+" Limit 3;");
-
-        while (rsProducts.next()) {
-            int productId = rsProducts.getInt("product_id");
-            ResultSet rsProductDetails = stmt.executeQuery("SELECT product_name, price, description FROM Products WHERE product_id = " + productId);
-            String productname="";
-            int price=0;
-            String description="";
-            String description1="";
-            if (rsProductDetails.next()) {
-
-              productname=rsProductDetails.getString("product_name");
-              price=rsProductDetails.getInt("price");
-              description1=rsProductDetails.getString("description");
-              description=description1.substring(0,Math.min(description1.length(),20));
-              String url="singleItem.jsp?item="+productId;
-%>
+                   Statement stmt = conn.createStatement();
+                   ResultSet rs = stmt.executeQuery("SELECT category_id, category, no_of_items FROM product_category");
                 
+                   while (rs.next()) {
+                       int categoryId = rs.getInt("category_id");
+                       String categoryName = rs.getString("category");
+                       int numofitem = rs.getInt("no_of_items");
+                       out.print("k");
 
-                    <%-- One card --%>
-                    
-                      <div class="col-md-3 mb-2">
+           %>
+           <div class="row mb-4">
+               <div class="col">
+                   <h1><%= categoryName %></h1>
+                   <h3>Over <%= numofitem %> items</h3>
+               </div>
+           </div>
+           <div class="row">
+               <%  
+                   PreparedStatement pstmtProducts = conn.prepareStatement("SELECT product_id FROM productcategories WHERE category_id = ?");
+                   pstmtProducts.setInt(1, categoryId);
+                   ResultSet rsProducts = pstmtProducts.executeQuery();
 
-                        <div class="card" style="width: 18rem;">
-                          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKyuPKhH2fJiPMBTc7n4rxSo7UrkZeSD8k66Ir4fI2A&s" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title"><%=productname%></h5>
-                            <p class="card-text"><%=description%>...<a href="" class="btn btn-link">more</a></p>
-                            <a href=<%=url%> class="btn btn-primary">Rs. <%=price%></a>
-                          </div>
-                        </div>
-                      </div>
+                   while (rsProducts.next()) {
+                       int productId = rsProducts.getInt("product_id");
 
-                      <%-- One card --%>
-                      
+                       PreparedStatement pstmtProductDetails = conn.prepareStatement("SELECT product_name, price, description FROM Products WHERE product_id = ?");
+                       pstmtProductDetails.setInt(1, productId);
+                       ResultSet rsProductDetails = pstmtProductDetails.executeQuery();
 
-                      <!-- Add more cards as needed -->
-                    
+                       if (rsProductDetails.next()) {
+                           String productname = rsProductDetails.getString("product_name");
+                           int price = rsProductDetails.getInt("price");
+                           String description = rsProductDetails.getString("description");
+                           if (description.length() > 20) {
+                               description = description.substring(0, 20) + "...";
+                           }
 
-<%
-            }
-
-        }
-
-  %>
-   <%-- card --%>
-  </div>
-                    <div class="row justify-content-end">
-                      <div class="col-auto">
-                        <a href="listing.jsp?category="+<%=categoryId%> class="btn btn-link">More</a>
-                      </div>
+                           PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ?");
+                           pstmtImage.setInt(1, productId);
+                           ResultSet rsImage = pstmtImage.executeQuery();
+                           String imgBase64 = "";
+                           if (rsImage.next()) {
+                               Blob imageBlob = rsImage.getBlob("image");
+                               if(imageBlob!=null){
+                                byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+                               imgBase64 = Base64.getEncoder().encodeToString(imgData);
+                               }
+                               
+                           }
+               %>
+               <!-- Card for product -->
+               <div class="col-md-3 mb-2">
+                <div class="card" style="width: 18rem;">
+                    <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= productname %></h5>
+                        <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
+                        <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-primary">Rs. <%= price %></a>
                     </div>
-                  <%-- One category --%>
-  
-<%
-    }
-%>
-</div>
-</section>
-
+                </div>
+            </div>
+            
+               <%  
+                       }
+                   }
+               %>
+           </div>
+           <div class="row justify-content-end">
+               <div class="col-auto">
+                   <a href="listing.jsp?category=<%= categoryId %>" class="btn btn-link">More</a>
+               </div>
+           </div>
+           <%  
+                   }
+               } catch (Exception e) {
+                out.print(e);
+                   e.printStackTrace();
+               } finally {
+                   if (conn != null) {
+                       try {
+                           conn.close();
+                       } catch (SQLException e) {
+                           e.printStackTrace();
+                       }
+                   }
+               }
+           %>
+       </div>
+   </section>
 
     <!-- Footer -->
     <footer>

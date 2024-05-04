@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
+<%@ page import="java.util.*,java.sql.*" %>\
+<%@ page import="java.util.Base64" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,7 +153,7 @@
                 <li><a href="profile.jsp">My Account</a></li>
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
         </div>
     </nav>
@@ -176,83 +178,97 @@
     <!-- Listings Section -->
     <section id="listings">
         <div class="container">
-            <%
-                Connection conn = null;
-                ResultSet result = null;
-                try {
-                    Class.forName("org.mariadb.jdbc.Driver");
-                   // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-                    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
-                } catch (Exception e) {
-                    out.print(e + "");
-                }
-
-                // Get current user's ID from session
-                String currUserID = (String) session.getAttribute("userID");
-
-                // Fetch conversations where the current user is either the seller or the buyer
-                String query = "SELECT * FROM conversation WHERE seller_id = ? OR buyer_id = ?";
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, currUserID);
-                pstmt.setString(2, currUserID);
-                ResultSet rs = pstmt.executeQuery();
-
-                // Iterate through each conversation
-                while (rs.next()) {
-                    String conversationID = rs.getString("conversation_id");
-                    String sellerID = rs.getString("seller_id");
-                    String buyerID = rs.getString("buyer_id");
-                    String sellerurl="start_convo_process.jsp?seller_id="+sellerID;
-                    String buyerurl="start_convo_process.jsp?seller_id="+buyerID;
-
-
-                    // Get the name of the seller
-                    PreparedStatement pstmtSeller = conn.prepareStatement("SELECT first_name,last_name FROM user WHERE user_id = "+sellerID);
-                    // pstmtSeller.setString(1, sellerID);
-                    ResultSet rsSeller = pstmtSeller.executeQuery();
-                    rsSeller.next();
-                    String sellerName = rsSeller.getString("first_name")+" "+rsSeller.getString("last_name");
-
-                    // Get the name of the buyer
-                    PreparedStatement pstmtBuyer = conn.prepareStatement("SELECT first_name,last_name FROM user WHERE user_id = "+buyerID);
-                    // pstmtBuyer.setString(1, buyerID);
-                    ResultSet rsBuyer = pstmtBuyer.executeQuery();
-                    rsBuyer.next();
-                    String buyerName = rsBuyer.getString("first_name")+" "+rsBuyer.getString("first_name");
-                    // String url="start_convo_process.jsp?seller_id="+seller_id;
-            %>
-
-            <!-- Display the conversation with corresponding seller or buyer name -->
+            <% 
+            Connection conn = null;
+            try {
+                Class.forName("org.mariadb.jdbc.Driver");
+                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+            } catch (Exception e) {
+                out.print(e);
+            }
             
-            <% if (sellerID.equals(currUserID)) { %>
-            <div class="row">
-            <a href=<%=buyerurl%> >
-            <div class="card w-75 mb-3">
-                <div class="card-body">
-                    <h5 class="card-title"><%=buyerName%></h5>
-                    <p class="card-text">Wants to buy!</p>
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            
+            try {
+                pstmt = conn.prepareStatement("SELECT p.product_id, p.product_name, p.price, p.description, i.image FROM Products p INNER JOIN Images i ON p.product_id = i.product_id WHERE p.product_id IN (SELECT product_id FROM productcategories WHERE category_id = ?) LIMIT 2");
                 
-                </div>
-            </div>
-            </a>
-            <% }else { %>
-            <div class="row">
-            <a href=<%=sellerurl%> >
-            <div class="card w-75 mb-3">
-                <div class="card-body">
-                <h5 class="card-title"><%=sellerName%></h5>
-                <p class="card-text">Selling a product!</p>
-                
-                </div>
-            </div>
-            </a>
-            <% } %>
-            <%
+                // Iterate through product categories
+                while (rs.next()) {
+                    int categoryId = rs.getInt("category_id");
+                    String categoryName = rs.getString("category");
+                    int numItems = rs.getInt("no_of_items");
+                    
+                    // Display category details
+                    %>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h1><%= categoryName %></h1>
+                            <h3>Over <%= numItems %> items</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                    <% 
+                    
+                    // Set category ID parameter for prepared statement
+                    pstmt.setInt(1, categoryId);
+                    ResultSet rsProducts = pstmt.executeQuery();
+                    
+                    // Iterate through products for the category
+                    while (rsProducts.next()) {
+                        String productName = rsProducts.getString("product_name");
+                        int price = rsProducts.getInt("price");
+                        String description = rsProducts.getString("description");
+                        Blob imageBlob = rsProducts.getBlob("image");
+                        
+                        // Convert image blob to base64
+                        byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+                        String imgBase64 = Base64.getEncoder().encodeToString(imgData);
+                        
+                        // Display product details
+                        %>
+                        <div class="col-md-3 mb-2">
+                            <div class="card" style="width: 18rem;">
+                                <img src="data:image/jpeg;base64, <%= imgBase64 %>" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= productName %></h5>
+                                    <p class="card-text"><%= description.substring(0, Math.min(description.length(), 20)) %>...<a href="" class="btn btn-link">more</a></p>
+                                    <a href="#" class="btn btn-primary">Rs. <%= price %></a>
+                                </div>
+                            </div>
+                        </div>
+                        <% 
+                    }
+                    
+                    // Close products result set
+                    rsProducts.close();
+                    %>
+                    </div>
+                    <div class="row justify-content-end">
+                        <div class="col-auto">
+                            <a href="listing.jsp?category=<%= categoryId %>" class="btn btn-link">More</a>
+                        </div>
+                    </div>
+                    <% 
                 }
-                %>
+                
+                // Close categories result set
+                rs.close();
+            } catch (Exception e) {
+                out.print(e);
+            } finally {
+                // Close connection in finally block
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
+                    out.print(e);
+                }
+            }
+            %>
         </div>
     </section>
-
     <!-- Footer -->
     <footer>
         <div class="container">
