@@ -284,7 +284,8 @@ footer {
                Connection conn = null;
                try {
                    Class.forName("org.mariadb.jdbc.Driver");
-                   conn= DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                   conn= DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                //    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
                    
                    Statement stmt = conn.createStatement();
                    ResultSet rs = stmt.executeQuery("SELECT category_id, category, no_of_items FROM product_category");
@@ -293,7 +294,7 @@ footer {
                        int categoryId = rs.getInt("category_id");
                        String categoryName = rs.getString("category");
                        int numofitem = rs.getInt("no_of_items");
-                       out.print("k");
+                    //    out.print("k");
 
            %>
            <div class="row mb-4">

@@ -9,11 +9,13 @@
 	<div class="col12">
 		<br>
 		<% 
+
+		if (session != null && session.getAttribute("userID") != null) {
 		 Connection con = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
-        	//con = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-			con = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+        	con = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+			// con = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
 		
 		}catch(Exception e){out.print(e+"con");}
 		out.println("<html><body>");
@@ -34,11 +36,15 @@
 			conversation_id=rs3.getInt("conversation_id");
 		}
 		
-        %>
-        <%
+       
         response.setIntHeader("Refresh", 5);
 		String url="chatpage.jsp?convo="+conversation_id;
         response.sendRedirect(url);
+		}else{
+			 response.setIntHeader("Refresh", 5);
+			String url="login.jsp?message="+"Please Login to Continue";
+        	response.sendRedirect(url);
+		}
     %>
 </div></div>
 </body>

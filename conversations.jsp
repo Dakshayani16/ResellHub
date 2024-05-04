@@ -6,13 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VJTI Resell Hub - Home</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Include Bootstrap CSS and Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <style>
+</head>
+<style>
         /* Global Styles */
         /* Search Section Styles */
         #search {
@@ -138,7 +136,6 @@
             padding: 10px 0;
         }
     </style>
-</head>
 <body>
     <!-- Navigation Bar -->
     <nav>
@@ -155,6 +152,7 @@
             </ul>
         </div>
     </nav>
+
 
     <!-- Banner Section -->
     <section id="banner">
@@ -176,85 +174,99 @@
     <!-- Listings Section -->
     <section id="listings">
         <div class="container">
-            <%
-                Connection conn = null;
-                ResultSet result = null;
-                try {
-                    Class.forName("org.mariadb.jdbc.Driver");
-                   // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-                    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
-                } catch (Exception e) {
-                    out.print(e + "");
-                }
-
-                // Get current user's ID from session
-                String currUserID = (String) session.getAttribute("userID");
-
-                // Fetch conversations where the current user is either the seller or the buyer
-                String query = "SELECT * FROM conversation WHERE seller_id = ? OR buyer_id = ?";
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, currUserID);
-                pstmt.setString(2, currUserID);
-                ResultSet rs = pstmt.executeQuery();
-
-                // Iterate through each conversation
-                while (rs.next()) {
-                    String conversationID = rs.getString("conversation_id");
-                    String sellerID = rs.getString("seller_id");
-                    String buyerID = rs.getString("buyer_id");
-                    String sellerurl="start_convo_process.jsp?seller_id="+sellerID;
-                    String buyerurl="start_convo_process.jsp?seller_id="+buyerID;
-
-
-                    // Get the name of the seller
-                    PreparedStatement pstmtSeller = conn.prepareStatement("SELECT first_name,last_name FROM user WHERE user_id = "+sellerID);
-                    // pstmtSeller.setString(1, sellerID);
-                    ResultSet rsSeller = pstmtSeller.executeQuery();
-                    rsSeller.next();
-                    String sellerName = rsSeller.getString("first_name")+" "+rsSeller.getString("last_name");
-
-                    // Get the name of the buyer
-                    PreparedStatement pstmtBuyer = conn.prepareStatement("SELECT first_name,last_name FROM user WHERE user_id = "+buyerID);
-                    // pstmtBuyer.setString(1, buyerID);
-                    ResultSet rsBuyer = pstmtBuyer.executeQuery();
-                    rsBuyer.next();
-                    String buyerName = rsBuyer.getString("first_name")+" "+rsBuyer.getString("first_name");
-                    // String url="start_convo_process.jsp?seller_id="+seller_id;
-            %>
-
-            <!-- Display the conversation with corresponding seller or buyer name -->
-            
-            <% if (sellerID.equals(currUserID)) { %>
             <div class="row">
-            <a href=<%=buyerurl%> >
-            <div class="card w-75 mb-3">
-                <div class="card-body">
-                    <h5 class="card-title"><%=buyerName%></h5>
-                    <p class="card-text">Wants to buy!</p>
-                
-                </div>
-            </div>
-            </a>
-            <% }else { %>
-            <div class="row">
-            <a href=<%=sellerurl%> >
-            <div class="card w-75 mb-3">
-                <div class="card-body">
-                <h5 class="card-title"><%=sellerName%></h5>
-                <p class="card-text">Selling a product!</p>
-                
-                </div>
-            </div>
-            </a>
-            <% } %>
-            <%
-                }
+                <%
+                    Connection conn = null;
+                    PreparedStatement pstmt = null;
+                    ResultSet rs = null;
+
+                    try {
+                        Class.forName("org.mariadb.jdbc.Driver");
+                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+
+                        // Get current user's ID from session
+                        String currUserID = (String) session.getAttribute("userID");
+
+                        // Fetch conversations where the current user is either the seller or the buyer
+                        String query = "SELECT conversation_id, seller_id, buyer_id FROM conversation WHERE seller_id = ? OR buyer_id = ?";
+                        pstmt = conn.prepareStatement(query);
+                        pstmt.setString(1, currUserID);
+                        pstmt.setString(2, currUserID);
+                        rs = pstmt.executeQuery();
+
+                        // Iterate through each conversation
+                        while (rs.next()) {
+                            // out.print("k");
+                            String conversationID = rs.getString("conversation_id");
+                            String sellerID = rs.getString("seller_id");
+                            String buyerID = rs.getString("buyer_id");
+
+                            // Get the name of the other party (buyer or seller)
+                            String otherPartyName = null;
+                            if (sellerID.equals(currUserID)) {
+                                PreparedStatement pstmtBuyer = conn.prepareStatement("SELECT first_name, last_name FROM user WHERE user_id = ?");
+                                pstmtBuyer.setString(1, buyerID);
+                                ResultSet rsBuyer = pstmtBuyer.executeQuery();
+                                if (rsBuyer.next()) {
+                                    otherPartyName = rsBuyer.getString("first_name") + " " + rsBuyer.getString("last_name");
+                                }
+                            } else {
+                                PreparedStatement pstmtSeller = conn.prepareStatement("SELECT first_name, last_name FROM user WHERE user_id = ?");
+                                pstmtSeller.setString(1, sellerID);
+                                ResultSet rsSeller = pstmtSeller.executeQuery();
+                                if (rsSeller.next()) {
+                                    otherPartyName = rsSeller.getString("first_name") + " " + rsSeller.getString("last_name");
+                                }
+                            }
+                                // out.print(otherPartyName);
+                            // Display the conversation information
+                            if (otherPartyName != null) { 
                 %>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= otherPartyName %></h5>
+                            <p class="card-text">Conversation ID: <%= conversationID %></p>
+                            <a href="chatpage.jsp?convo=<%= conversationID %>" class="btn btn-primary">View Conversation</a>
+                        </div>
+                    </div>
+                </div>
+                <%
+                            }
+                        }
+                    } catch (Exception e) {
+                        out.print(e);
+                    } finally {
+                        // Close resources
+                        if (rs != null) {
+                            try {
+                                rs.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (pstmt != null) {
+                            try {
+                                pstmt.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (conn != null) {
+                            try {
+                                conn.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                %>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer>
+     <footer>
         <div class="container">
             <p>&copy; 2024 VJTI Resell Hub. All rights reserved.</p>
         </div>

@@ -144,7 +144,13 @@
     </style>
 </head>
 <body>
+<% if(session.getAttribute("username")==null){ 
+ 
+			String url="login.jsp?message="+"Please Login to Continue";
+        	response.sendRedirect(url);}
+%>
     <nav>
+
         <div class="container1">
             <h1>VJTI Resell Hub</h1>
             <ul>
