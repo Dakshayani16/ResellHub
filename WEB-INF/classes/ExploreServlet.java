@@ -24,8 +24,8 @@ public class ExploreServlet extends HttpServlet {
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root","root");
-
+            // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root","root");
+            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
             String query = "SELECT * FROM products";
             stmt = conn.prepareStatement(query);
             rs = stmt.executeQuery();
