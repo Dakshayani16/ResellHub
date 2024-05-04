@@ -23,7 +23,7 @@
         }
         .dropdown-submenu:hover .dropdown-menu {
             display: block;
-            position: absolute;
+            /* position: absolute; */
             top: 0;
             left: 100%;
         }
@@ -67,7 +67,7 @@
             cursor: pointer;
             font-size: 16px;
             font-family: 'Poppins', sans-serif;
-            margin: 4px;
+            margin-right: 4px;
         }
 
         /* Navigation Bar Styles */
@@ -138,7 +138,9 @@
         .listing-item p {
             margin-top: 5px;
         }
-
+        #filterIcon {
+        margin-left: 0px;
+    }
         /* Footer Styles */
         footer {
             background-color: #333;
@@ -179,7 +181,7 @@
     <!-- Search Section -->
     <section id="search">
         <div class="container">
-            <form id="searchForm" action="#" method="GET">
+            <form id="searchForm" action="search.jsp" method="GET">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="allDropdownBtn">All</button>
