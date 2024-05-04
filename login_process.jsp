@@ -9,7 +9,10 @@ PreparedStatement stmt = null;
 ResultSet rs = null;
 PreparedStatement stmt2 = null;
 ResultSet rs2 = null;
+if(username.equals("admin") && password.equals("admin@123")){
 
+    
+}else{
 try {
     Class.forName("org.mariadb.jdbc.Driver");
    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
@@ -45,5 +48,6 @@ try {
     if (rs != null) rs.close();
     if (stmt != null) stmt.close();
     if (conn != null) conn.close();
+}
 }
 %>
