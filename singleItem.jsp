@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
+
+
+<%@ page import="java.util.Enumeration,java.sql.*" %>
+<%@ page import="java.util.Base64" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,7 +124,7 @@
         }
         .text-container {
         min-width: 200px; /* Minimum width for the div */
-        min-height: 400px;
+        min-height: 273px;
         padding: 20px; /* Add padding for better visualization */
         font-size: 18px; /* Adjust the font size of the text */
         
@@ -184,9 +188,10 @@
     boolean fav=false;
     Connection conn = null;
 		ResultSet result=null;
-		try{Class.forName("org.mariadb.jdbc.Driver");
-        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-        	// conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+		try{
+      Class.forName("org.mariadb.jdbc.Driver");
+        	//conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
         
         }catch(Exception e){out.print(e+"");}
     if(addFav!=null){
@@ -311,12 +316,29 @@
             fav = (count > 0);
         }
 
+
+    PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ?");
+    int productId = Integer.parseInt(product_id);
+    pstmtImage.setInt(1, productId);
+    ResultSet rsImage = pstmtImage.executeQuery();
+    String imgBase64 = "";
+    if (rsImage.next()) {
+        Blob imageBlob = rsImage.getBlob("image");
+        if(imageBlob!=null){
+         byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+        imgBase64 = Base64.getEncoder().encodeToString(imgData);
+        }
+        
+    }
+
     conn.close();
 %>
 
     <!-- Listings Section -->
-    <section id="listings">
+    <!-- Listings Section -->
+<section id="listings">
   <div class="container">
+
     <div class="row mb-4">
       <div class="col">
         <h1><%=product_name%></h1>
@@ -403,27 +425,63 @@
               <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
             </svg></a>
                <% } %>         
+      <div class="row">
+          <div class="col-md-12">
+              <!-- Product Name -->
+              <h1><%=product_name%></h1>
           </div>
-        </div>
       </div>
-      <!-- Seller -->
-      <div class="col-md-6">
-        <div class="card mb-3" style="max-width: 540px;">
-          <div class="row g-0">
-            <h3 class="ps-2">Seller</h3>
-            <div class="col-md-4">
-              <div class="user-circle">U</div>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><%=seller_name%></h5>
-                <p class="card-text">VJTI,<%=branch%></p>
-                <p class="card-text"><%=contact_no%></p>
-                <a href=<%=url%> class="btn btn-primary">Message</a>
+      <div class="row">
+          <!-- Images -->
+          <div class="col-md-6">
+              <div class="card mb-3">
+                  <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
               </div>
-            </div>
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h5 class="card-title">Ratings</h5>
+                      <div class="ratings">
+                          <!-- Example using stars -->
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star"></span>
+                          <span class="fa fa-star"></span>
+                      </div>
+                  </div>
+              </div>
           </div>
-        </div>
+          <!-- Description and Seller -->
+          <div class="col-md-6">
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h3 class="card-text">Proposed Price: Rs.<%=price%>/-</h3>
+                      <p class="card-text text-container"><%=description%></p>
+                    
+                      <h3 class="card-text">Condition</h3>
+                      <p class="card-text"><%=condition_description%></p>
+                      <p class="card-text"><small class="text-muted">Used for <%=used_for%> year</small></p>
+                  </div>
+              </div>
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h3 class="ps-2 card-title">Seller</h3>
+                      <div class="row g-0">
+                          <div class="col-md-4">
+                              <div class="user-circle">U</div>
+                          </div>
+                          <div class="col-md-8">
+                              <div class="card-body">
+                                  <h5 class="card-title"><%=seller_name%></h5>
+                                  <p class="card-text">VJTI, <%=branch%></p>
+                                  <p class="card-text"><%=contact_no%></p>
+                                  <a href="<%=url%>" class="btn btn-primary">Message</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
     </div>
     <div class="row">
@@ -462,10 +520,10 @@
       
     </div>
   
+
   </div>
 </section>
 
-    </section>
 
     <!-- Footer -->
     <footer>

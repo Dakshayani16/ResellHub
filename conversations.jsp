@@ -189,8 +189,8 @@
 
                     try {
                         Class.forName("org.mariadb.jdbc.Driver");
-                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-
+                        //conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/mydatabase", "root", "root");
                         // Get current user's ID from session
                         String currUserID = (String) session.getAttribute("userID");
 
