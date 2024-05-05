@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
+
+
+<%@ page import="java.util.Enumeration,java.sql.*" %>
+<%@ page import="java.util.Base64" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,7 +124,7 @@
         }
         .text-container {
         min-width: 200px; /* Minimum width for the div */
-        min-height: 400px;
+        min-height: 273px;
         padding: 20px; /* Add padding for better visualization */
         font-size: 18px; /* Adjust the font size of the text */
         
@@ -171,9 +175,10 @@
     
     Connection conn = null;
 		ResultSet result=null;
-		try{Class.forName("org.mariadb.jdbc.Driver");
-        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-        	// conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+		try{
+      Class.forName("org.mariadb.jdbc.Driver");
+        	//conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
         
         }catch(Exception e){out.print(e+"");}
     
@@ -227,111 +232,87 @@
         condition_description = rs3.getString("description");
     }
     String url="start_convo_process.jsp?seller_id="+seller_id;
+    PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ?");
+    int productId = Integer.parseInt(product_id);
+    pstmtImage.setInt(1, productId);
+    ResultSet rsImage = pstmtImage.executeQuery();
+    String imgBase64 = "";
+    if (rsImage.next()) {
+        Blob imageBlob = rsImage.getBlob("image");
+        if(imageBlob!=null){
+         byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+        imgBase64 = Base64.getEncoder().encodeToString(imgData);
+        }
+        
+    }
     conn.close();
 %>
 
     <!-- Listings Section -->
-    <section id="listings">
+    <!-- Listings Section -->
+<section id="listings">
   <div class="container">
-    <div class="row mb-4">
-      <div class="col">
-        <h1><%=product_name%></h1>
-        
-      </div>
-    </div>
-    <div class="row">
-      <!-- Images -->
-      <div class="col-md-6">
-      <div id="carouselExampleIndicators" class="carousel slide">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="https://m.media-amazon.com/images/I/61O1ACXgWhS._AC_UF1000,1000_QL80_.jpg" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="https://m.media-amazon.com/images/I/61O1ACXgWhS._AC_UF1000,1000_QL80_.jpg" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="https://m.media-amazon.com/images/I/61O1ACXgWhS._AC_UF1000,1000_QL80_.jpg" class="d-block w-100" alt="...">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-
-    </div>
-
-      </div>
-      <!-- Description -->
-      <div class="col-md-6">
-        <!-- Description content -->
-        <h3>Proposed Price: Rs.<%=price%>/-</h3>
-        
-        <p class="text-container"><%=description%></p>
-        <hr>
-        <h3>Condition</h3>
-        <p><%=condition_description%></p>
-        <br>
-        <%-- <p>Bought in <%=buy_year%></p> --%>
-        <p class="card-text"><small class="text-body-secondary">Used for <%=used_for%> year</small></p><br>
-      </div>
-    </div>
-    <div class="row">
-      <!-- Ratings -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Ratings</h5>
-            <!-- Insert your rating mechanism here (e.g., stars or progress bar) -->
-            
-            <div class="ratings">
-              <!-- Example using stars -->
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star"></span>
-              <span class="fa fa-star"></span>
-            </div>
-    
-            <!-- Example of a heart icon for marking as favorite -->
-            <span class="fa fa-heart"></span>
-            
+      <div class="row">
+          <div class="col-md-12">
+              <!-- Product Name -->
+              <h1><%=product_name%></h1>
           </div>
-        </div>
       </div>
-      <!-- Seller -->
-      <div class="col-md-6">
-        <div class="card mb-3" style="max-width: 540px;">
-          <div class="row g-0">
-            <h3 class="ps-2">Seller</h3>
-            <div class="col-md-4">
-              <div class="user-circle">U</div>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><%=seller_name%></h5>
-                <p class="card-text">VJTI,<%=branch%></p>
-                <p class="card-text"><%=contact_no%></p>
-                <a href=<%=url%> class="btn btn-primary">Message</a>
+      <div class="row">
+          <!-- Images -->
+          <div class="col-md-6">
+              <div class="card mb-3">
+                  <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
               </div>
-            </div>
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h5 class="card-title">Ratings</h5>
+                      <div class="ratings">
+                          <!-- Example using stars -->
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star"></span>
+                          <span class="fa fa-star"></span>
+                      </div>
+                  </div>
+              </div>
           </div>
-        </div>
+          <!-- Description and Seller -->
+          <div class="col-md-6">
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h3 class="card-text">Proposed Price: Rs.<%=price%>/-</h3>
+                      <p class="card-text text-container"><%=description%></p>
+                    
+                      <h3 class="card-text">Condition</h3>
+                      <p class="card-text"><%=condition_description%></p>
+                      <p class="card-text"><small class="text-muted">Used for <%=used_for%> year</small></p>
+                  </div>
+              </div>
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h3 class="ps-2 card-title">Seller</h3>
+                      <div class="row g-0">
+                          <div class="col-md-4">
+                              <div class="user-circle">U</div>
+                          </div>
+                          <div class="col-md-8">
+                              <div class="card-body">
+                                  <h5 class="card-title"><%=seller_name%></h5>
+                                  <p class="card-text">VJTI, <%=branch%></p>
+                                  <p class="card-text"><%=contact_no%></p>
+                                  <a href="<%=url%>" class="btn btn-primary">Message</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
-    </div>
   </div>
 </section>
 
-    </section>
 
     <!-- Footer -->
     <footer>
