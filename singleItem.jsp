@@ -125,6 +125,10 @@
         font-size: 18px; /* Adjust the font size of the text */
         
     }
+    a {
+    color: inherit; /* Use the color inherited from its parent */
+    text-decoration: none; /* Optional: Remove underline */
+}
         .user-circle {
         width: 80px; /* Adjust the size of the circle */
         height: 80px; /* Adjust the size of the circle */
@@ -148,6 +152,12 @@
         }
     </style>
 </head>
+<% if(session.getAttribute("username")==null){ 
+ 
+			String url="login.jsp?message="+"Please Login to Continue";
+        	response.sendRedirect(url);
+}
+%>
 <body>
     <!-- Navigation Bar -->
     <nav>
@@ -167,8 +177,11 @@
 
     <!-- Banner Section -->
     <%
-    String product_id = request.getParameter("item");
-    
+    String product_id = (String)request.getParameter("item");
+    String addFav = request.getParameter("addFav");
+    String userrated = (String)request.getParameter("userrate");
+    String curr_user= (String)session.getAttribute("userID");
+    boolean fav=false;
     Connection conn = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
@@ -176,9 +189,37 @@
         	// conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
         
         }catch(Exception e){out.print(e+"");}
-    
+    if(addFav!=null){
+          String favquery="INSERT INTO favourites (user_id,product_id) VALUES (?,?);";
+         
+        try {
+          
+            PreparedStatement fpst = conn.prepareStatement(favquery);
+             fpst.setString(1,curr_user);
+          fpst.setString(2,product_id);
+           fpst.executeUpdate(); 
+          
+        } catch (Exception e) {
+            out.println("Error: " + e);
+      }}
+
+      if(userrated!=null){
+          String ratedquery="INSERT INTO reviews (posted_by,product_id, rating) VALUES (?,?,?);";
+         
+        try {
+          
+            PreparedStatement rppst = conn.prepareStatement(ratedquery);
+             rppst.setString(1,curr_user);
+          rppst.setString(2,product_id);
+          rppst.setString(3,userrated);
+           rppst.executeUpdate(); 
+          
+        } catch (Exception e) {
+            out.println("Error: " + e);
+      }}
+
     PreparedStatement ps = conn.prepareStatement("SELECT product_name, seller_id, condition_id, description, price FROM Products WHERE product_id = ?");
-    ps.setString(1, product_id);
+    ps.setString(1, ""+product_id);
     ResultSet rs = ps.executeQuery();
     
     String product_name = "";
@@ -227,6 +268,49 @@
         condition_description = rs3.getString("description");
     }
     String url="start_convo_process.jsp?seller_id="+seller_id;
+
+    // Rating
+     String ratquery = "SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = ?";
+     PreparedStatement rstmt = conn.prepareStatement(ratquery);
+         rstmt.setString(1, ""+product_id);
+        
+        // Execute the query
+        ResultSet rs4 = rstmt.executeQuery();
+        int averageRating=0;
+        // Retrieve the average rating from the result set
+        if (rs4.next()) {
+            averageRating = (int) Math.floor(rs4.getDouble("average_rating"));
+        }
+
+
+        String ratquery2 = "SELECT rating FROM reviews WHERE posted_by= ? and product_id = ?";
+     PreparedStatement rstmt2 = conn.prepareStatement(ratquery2);
+         rstmt2.setString(1, ""+curr_user);
+        rstmt2.setString(2, ""+product_id);
+        // Execute the query
+        ResultSet rs6 = rstmt2.executeQuery();
+        int user_rate=0;
+        boolean rated=false;
+        // Retrieve the average rating from the result set
+        if (rs6.next()) {
+            user_rate=rs6.getInt("rating");
+            rated=true;
+        }
+
+
+
+        String queryfav = "SELECT COUNT(*) AS count FROM favourites WHERE user_id = ? AND product_id = ?";
+        PreparedStatement psfav = conn.prepareStatement(queryfav);
+        psfav.setString(1, curr_user);
+        psfav.setString(2, product_id);
+        ResultSet rs5 = psfav.executeQuery();
+
+        // Check if the result set contains any rows
+        if (rs5.next()) {
+            int count = rs5.getInt("count");
+            fav = (count > 0);
+        }
+
     conn.close();
 %>
 
@@ -294,17 +378,31 @@
             <!-- Insert your rating mechanism here (e.g., stars or progress bar) -->
             
             <div class="ratings">
-              <!-- Example using stars -->
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star"></span>
-              <span class="fa fa-star"></span>
-            </div>
-    
+                 <%-- Display filled stars for i times --%>
+                <% for (int j = 0; j < averageRating; j++) { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                <% } %>
+                
+                <%-- Display lined stars for (5 - i) times --%>
+                <% for (int j = 0; j < (5 - averageRating); j++) { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                      <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                    </svg>
+                <% } %>
+              </div>
             <!-- Example of a heart icon for marking as favorite -->
-            <span class="fa fa-heart"></span>
-            
+           <% if(fav){ %>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+              </svg>
+           <% }else{ %>
+           <a href="singleItem.jsp?addFav=k&item=<%= product_id %>">
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+              <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+            </svg></a>
+               <% } %>         
           </div>
         </div>
       </div>
@@ -328,6 +426,42 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <!-- Ratings -->
+      
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Your rating for the product</h5>
+            <!-- Insert your rating mechanism here (e.g., stars or progress bar) -->
+            <% if(rated){ %>
+            <div class="ratings">
+                 <%-- Display filled stars for i times --%>
+                <% for (int j = 0; j < user_rate; j++) { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                <% } %>
+                
+                <%-- Display lined stars for (5 - i) times --%>
+                <% for (int j = 0; j < (5 - user_rate); j++) { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                      <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                    </svg>
+                <% } %>
+              </div>
+              <% }else{ %>
+                   <% for (int j = 0; j < 5; j++) { %>
+                    <a href="singleItem.jsp?userrate=<%= j+1 %>&item=<%=product_id%>" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                      <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                    </svg></a>
+                <% } }%>
+
+          </div>
+        </div>
+      
+      
+    </div>
+  
   </div>
 </section>
 

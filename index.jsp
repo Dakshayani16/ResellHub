@@ -138,7 +138,10 @@
         .listing-item p {
             margin-top: 5px;
         }
-
+        a {
+    color: inherit; /* Use the color inherited from its parent */
+    text-decoration: none; /* Optional: Remove underline */
+}
         /* Footer Styles */
         footer {
             background-color: #333;
@@ -168,13 +171,28 @@
         </div>
     </nav>
 
-    <!-- Banner Section -->
-    <section id="banner">
-        <div class="container">
-            <h2>Welcome to VJTI Resell Hub</h2>
-            <p>Buy and sell items near you. Discover great deals!</p>
+  <section id="banner">
+    <div class="container">
+        <div class="row align-items-center"> <!-- Align items vertically in the middle -->
+         <div class="col-md-4"> </div>
+            <div class="col-md-6"> <!-- Take 9 columns for the text -->
+                <div class="d-flex align-items-center"> <!-- Align items horizontally in the middle -->
+                    <div>
+                        <h2>Welcome Admin</h2>
+                        <p>Get insights on Resell Hub working!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 text-end"> <!-- Take 3 columns for the heart icon and align it to the end -->
+                <a href="conversations.jsp"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-chat-left-text-fill" viewBox="0 0 16 16">
+  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"/>
+</svg><!-- Medium-sized heart icon --></a><a href="favourites.jsp"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/></a>
+</svg>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Search Section -->
     <section id="search">

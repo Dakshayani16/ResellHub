@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
+<%@ page import="java.util.Enumeration,java.sql.*" %>
+<%@ page import="java.util.Base64" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,97 +182,74 @@
     <!-- Listings Section -->
     <section id="listings">
         <div class="container">
-            <div class="row">
-                <%
-                    Connection conn = null;
-                    PreparedStatement pstmt = null;
-                    ResultSet rs = null;
+            <%  
+                Connection conn = null;
+                try {
+                    Class.forName("org.mariadb.jdbc.Driver");
+                    conn= DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                    String userID = (String)session.getAttribute("userID");
+                    PreparedStatement pstmtFavourites = conn.prepareStatement("SELECT product_id FROM favourites WHERE user_id = ?");
+                    pstmtFavourites.setString(1, userID);
+                    ResultSet rsFavourites = pstmtFavourites.executeQuery();
+  %> <div class="row mb-4"> <%
+                    while (rsFavourites.next()) {
+                        int productId = rsFavourites.getInt("product_id");
 
-                    try {
-                        Class.forName("org.mariadb.jdbc.Driver");
-                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                        PreparedStatement pstmtProductDetails = conn.prepareStatement("SELECT product_name, price, description FROM Products WHERE product_id = ?");
+                        pstmtProductDetails.setInt(1, productId);
+                        ResultSet rsProductDetails = pstmtProductDetails.executeQuery();
 
-                        // Get current user's ID from session
-                        String currUserID = (String) session.getAttribute("userID");
+                        if (rsProductDetails.next()) {
+                            String productName = rsProductDetails.getString("product_name");
+                            int price = rsProductDetails.getInt("price");
+                            String description = rsProductDetails.getString("description");
+                            if (description.length() > 20) {
+                                description = description.substring(0, 20) + "...";
+                            }
 
-                        // Fetch conversations where the current user is either the seller or the buyer
-                        String query = "SELECT conversation_id, seller_id, buyer_id FROM conversation WHERE seller_id = ? OR buyer_id = ?";
-                        pstmt = conn.prepareStatement(query);
-                        pstmt.setString(1, currUserID);
-                        pstmt.setString(2, currUserID);
-                        rs = pstmt.executeQuery();
-
-                        // Iterate through each conversation
-                        while (rs.next()) {
-                            // out.print("k");
-                            String conversationID = rs.getString("conversation_id");
-                            String sellerID = rs.getString("seller_id");
-                            String buyerID = rs.getString("buyer_id");
-
-                            // Get the name of the other party (buyer or seller)
-                            String otherPartyName = null;
-                            if (sellerID.equals(currUserID)) {
-                                PreparedStatement pstmtBuyer = conn.prepareStatement("SELECT first_name, last_name FROM user WHERE user_id = ?");
-                                pstmtBuyer.setString(1, buyerID);
-                                ResultSet rsBuyer = pstmtBuyer.executeQuery();
-                                if (rsBuyer.next()) {
-                                    otherPartyName = rsBuyer.getString("first_name") + " " + rsBuyer.getString("last_name");
-                                }
-                            } else {
-                                PreparedStatement pstmtSeller = conn.prepareStatement("SELECT first_name, last_name FROM user WHERE user_id = ?");
-                                pstmtSeller.setString(1, sellerID);
-                                ResultSet rsSeller = pstmtSeller.executeQuery();
-                                if (rsSeller.next()) {
-                                    otherPartyName = rsSeller.getString("first_name") + " " + rsSeller.getString("last_name");
+                            PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ?");
+                            pstmtImage.setInt(1, productId);
+                            ResultSet rsImage = pstmtImage.executeQuery();
+                            String imgBase64 = "";
+                            if (rsImage.next()) {
+                                Blob imageBlob = rsImage.getBlob("image");
+                                if(imageBlob!=null){
+                                    byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+                                    imgBase64 = Base64.getEncoder().encodeToString(imgData);
                                 }
                             }
-                                // out.print(otherPartyName);
-                            // Display the conversation information
-                            if (otherPartyName != null) { 
-                %>
-                <div class="col-md-4">
-                    <div class="card mb-3">
+            %>
+            <!-- Card for product -->
+            
+                <div class="col-md-3 mb-2">
+                    <div class="card" style="width: 18rem;">
+                        <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
                         <div class="card-body">
-                            <h5 class="card-title"><%= otherPartyName %></h5>
-                            <p class="card-text">Conversation ID: <%= conversationID %></p>
-                            <a href="chatpage.jsp?convo=<%= conversationID %>" class="btn btn-primary">View Conversation</a>
+                            <h5 class="card-title"><%= productName %></h5>
+                            <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
+                            <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-primary">Rs. <%= price %></a>
                         </div>
                     </div>
                 </div>
-                <%
-                            }
-                        }
-                    } catch (Exception e) {
-                        out.print(e);
-                    } finally {
-                        // Close resources
-                        if (rs != null) {
-                            try {
-                                rs.close();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if (pstmt != null) {
-                            try {
-                                pstmt.close();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if (conn != null) {
-                            try {
-                                conn.close();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
+            
+            <%  
                     }
-                %>
-            </div>
+                }
+            } catch (Exception e) {
+                out.print(e);
+                e.printStackTrace();
+            } finally {
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            %></div>
         </div>
     </section>
-
     <!-- Footer -->
      <footer>
         <div class="container">

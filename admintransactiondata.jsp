@@ -170,6 +170,7 @@
     <!-- Banner Section -->
     <section id="banner">
         <div class="container">
+        
             <h2>Welcome Admin</h2>
             <p>Get insights on Resell Hub working!</p>
         </div>
