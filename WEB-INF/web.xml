@@ -24,6 +24,14 @@
         <servlet-name>AddProduct</servlet-name>
         <url-pattern>/AddProduct</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>TransactionServlet</servlet-name>
+        <servlet-class>TransactionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransactionServlet</servlet-name>
+        <url-pattern>/TransactionServlet</url-pattern>
+    </servlet-mapping>
     <!-- Multipart configuration -->
     <multipart-config>
         <!-- Specify the maximum size of a file uploaded -->

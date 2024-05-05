@@ -286,6 +286,7 @@ String priceRange = request.getParameter("priceRange");
                                         pstmt = conn.prepareStatement("SELECT product_id, product_name, price, description FROM Products WHERE product_name LIKE ?");
                                         pstmt.setString(1, "%" + searchInput + "%");
                                     } else if(!category.equals("All") && priceRange.equals("All") && searchInput == "") {
+
                                         Statement stmt = conn.createStatement();
                                        // out.print(" ef2"+category);
         category = category.trim().toLowerCase();
@@ -319,6 +320,9 @@ String priceRange = request.getParameter("priceRange");
                                     pstmt.setInt(1, minPrice);
 pstmt.setInt(2, maxPrice);
                                      // out.print(sqlQuery);
+
+                                    }else {
+                                        
 
                                     }
                                     ResultSet rs = null;
