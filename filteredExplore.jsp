@@ -279,6 +279,19 @@ String priceRange = request.getParameter("priceRange");
                                         pstmt = conn.prepareStatement("SELECT product_id, product_name, price, description FROM Products WHERE product_id IN (SELECT product_id FROM productcategories WHERE category_id = ?)");
                                         pstmt.setInt(1, categoryId);   
                                        // out.print(categoryId);
+                                    }else if(category.equals("All") && !priceRange.equals("All") && searchInput == null){
+                                        String[] priceRangeArray = priceRange.split(" - ");
+
+// Extract the minimum and maximum values from the array
+String minPriceString = priceRangeArray[0].replace("Price ₹", ""); // Remove "Price ₹" from the beginning
+String maxPriceString = priceRangeArray[1].replace(" ₹", ""); // Remove " ₹" from the beginning
+
+// Convert the extracted strings into numeric values
+double minPrice = Double.parseDouble(minPriceString);
+double maxPrice = Double.parseDouble(maxPriceString);
+
+System.out.println("Minimum Price: " + minPrice);
+System.out.println("Maximum Price: " + maxPrice);
                                     }
                                     ResultSet rs = null;
                                     // Execute the query
