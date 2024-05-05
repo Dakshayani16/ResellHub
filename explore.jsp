@@ -256,11 +256,11 @@ footer {
                             <div id="filterDropdowns" class="dropdown-menu" aria-labelledby="filterIcon">
                                 <div class="dropdown-item" href="#">By Price - All</div>
                                 
-                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="Price up to ₹50">Price up to ₹50</a>
-                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="Price ₹50.1 - ₹100">Price ₹50.1 - ₹100</a>
-                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="Price ₹100.1 - ₹200">Price ₹100.1 - ₹200</a>
-                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="Price ₹200.1 - ₹500">Price ₹200.1 - ₹500</a>
-                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="Price more than ₹500">Price more than ₹500</a>
+                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="0,50">Price up to ₹50</a>
+                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="50,100">Price ₹50 - ₹100</a>
+                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="100,200">Price ₹100 - ₹200</a>
+                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="200,500">Price ₹200 - ₹500</a>
+                                <a class="dropdown-item subprice" name="priceRange" href="#" data-category="500,500000">Price more than ₹500</a>
                                 
                                 
                                     <!-- Add more subprices as needed -->

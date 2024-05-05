@@ -241,7 +241,33 @@ String priceRange = request.getParameter("priceRange");
 
 <h2>Search results for <%= (searchInput != null && !searchInput.equals("")) ? "\"" + searchInput + "\"" : "" %>
     <%= (category != null && !category.equals("All")) ? " Category: " + category : "" %>
-    <%= (priceRange != null && !priceRange.equals("All")) ? " Price Range: " + priceRange : "" %>
+    <% 
+
+    
+   
+    
+    if (priceRange != null && !priceRange.equals("All")) {
+        
+        
+      
+           
+                String[] prices1 = priceRange.split(",");
+                if(prices1[0].equals("500")){
+                    out.print("Price Range: More than 500");
+                }else{
+                    out.print("Price Range: Rs." + prices1[0] + " to Rs." + prices1[1] + " ");
+                
+                }
+                
+        
+    }
+
+
+%>
+
+
+
+    
 </h2>
 
                             <div class="listings-grid">
@@ -279,19 +305,21 @@ String priceRange = request.getParameter("priceRange");
                                         pstmt = conn.prepareStatement("SELECT product_id, product_name, price, description FROM Products WHERE product_id IN (SELECT product_id FROM productcategories WHERE category_id = ?)");
                                         pstmt.setInt(1, categoryId);   
                                        // out.print(categoryId);
-                                    }else if(category.equals("All") && !priceRange.equals("All") && searchInput == null){
-                                        String[] priceRangeArray = priceRange.split(" - ");
+                                    }else if(category.equals("All") && !priceRange.equals("All") && searchInput.equals("")){
+                                        String[] prices = priceRange.split(",");
+                                        int minPrice = Integer.parseInt(prices[0]);
+                                        int maxPrice = Integer.parseInt(prices[1]);
+                                        
+                                        // Print the extracted values
+                                       
+                                        
+                                        // Your SQL query to fetch data from the product table based on the price field
+                                        String sqlQuery = "SELECT product_id, product_name, price, description FROM Products WHERE price BETWEEN ? AND ?";
+                                      pstmt = conn.prepareStatement(sqlQuery);
+                                    pstmt.setInt(1, minPrice);
+pstmt.setInt(2, maxPrice);
+                                     // out.print(sqlQuery);
 
-// Extract the minimum and maximum values from the array
-String minPriceString = priceRangeArray[0].replace("Price ₹", ""); // Remove "Price ₹" from the beginning
-String maxPriceString = priceRangeArray[1].replace(" ₹", ""); // Remove " ₹" from the beginning
-
-// Convert the extracted strings into numeric values
-double minPrice = Double.parseDouble(minPriceString);
-double maxPrice = Double.parseDouble(maxPriceString);
-
-System.out.println("Minimum Price: " + minPrice);
-System.out.println("Maximum Price: " + maxPrice);
                                     }
                                     ResultSet rs = null;
                                     // Execute the query
