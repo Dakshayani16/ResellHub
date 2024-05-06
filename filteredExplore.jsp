@@ -279,7 +279,8 @@ String priceRange = request.getParameter("priceRange");
                                 try {
                                     // Establish database connection
                                     Class.forName("org.mariadb.jdbc.Driver");
-                                    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                                    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                                     conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
                                    // out.print(" ef"+category);
                                     if(category.equals("All") && priceRange.equals("All") && searchInput != null) {
                                        // out.print(" ef1"+category);
