@@ -224,7 +224,7 @@ body {
                                 
                                 <!-- Dropdown options here -->
                                 <a class="dropdown-item category" name="category" href="#" data-category="All">All</a>
-<a class="dropdown-item category" name="category" href="#" data-category="Stationery">Stationery</a>
+<a class="dropdown-item category" name="category" href="listings.jsp" data-category="Stationery">Stationery</a>
 <a class="dropdown-item category" name="category" href="#" data-category="Electronics">Electronics</a>
 <a class="dropdown-item category" name="category" href="#" data-category="Clothing">Clothing</a>
 <a class="dropdown-item category" name="category" href="#" data-category="Lab Equipment">Lab Equipment</a>

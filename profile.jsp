@@ -13,23 +13,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - VJTI Resell Hub</title>
     <!-- Font Import -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <!-- CSS Styles -->
+    
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<!-- CSS Styles -->
     <style>
         /* Global Styles */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #ffffff
         }
         /* Navigation Bar Styles */
         nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
         nav ul {
             list-style: none;
@@ -44,7 +53,7 @@
             margin-left: 0; /* No margin for the first child */
         }
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
         nav h1 {
@@ -52,7 +61,7 @@
             display: inline;
             float: left; /* Aligning the logo to the left */
         }
-        .container {
+        .container-c {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -81,7 +90,7 @@
         /* Card Grid Styles */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column width based on available space */
+    /* Adjust column width based on available space */
     gap: 20px; /* Spacing between cards */
 }
 
@@ -95,7 +104,13 @@
     display: flex; /* Ensure elements inside the card align properly */
     flex-direction: column; /* Stack the image and details vertically */
 }
-
+footer {
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
+            text-align: center;
+            padding: 100px 0;
+        }
 .card img {
     width: 100%;
     height: auto;
@@ -172,29 +187,63 @@
     border-radius: 5px;
     cursor: pointer;
 }
+ .btn-warning {
+      color: #ffffff; /* Text color */
+      background-color: #FD5F04 !important; /* Orange background color */
+      border-color: #FD5F04 !important; /* Orange border color */
+    }
 
+    /* Hover state */
+    .btn-warning:hover {
+      color: #000000; /* Text color on hover */
+      background-color: #fe4d00 !important; /* Darker orange background color on hover */
+      border-color: #cc4d00 !important; /* Darker orange border color on hover */
+    }
 .dialog button:hover {
     background-color: #555;
 }
     </style>
 </head>
+<% if(session.getAttribute("username")==null){ 
+ 
+			String url="login.jsp?message="+"Please Login to Continue";
+        	response.sendRedirect(url);
+}
+%>
 <body>
     <!-- Navigation Bar -->
-    <nav>
+     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+        
+            <h1><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
+                <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
+<br><br><br><br><br><br><br>
 
+<div class="container">
+<section>
+            <h3 align="center">Recent Activities</h3><br><hr>
+        </section>
+</div>
     <!-- Main Content Section -->
-    <div class="container">
+    <div class="container-c">
         <%
             // Fetch user information from the database
             Connection conn = null;
@@ -203,7 +252,8 @@
             try {
                 String user_id = (String) session.getAttribute("userID"); // Cast to String
               //  out.print(user_id);
-                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
                 String sql = "SELECT * FROM user WHERE user_id = ?";
                 stmt = conn.prepareStatement(sql);
                 stmt.setString(1, user_id); // Use setString for prepared statement
@@ -211,25 +261,44 @@
                 
                 if (rs.next()) {
         %>
-        <h2>Welcome, <%= rs.getString("first_name") %>!</h2>
+        
         
         <!-- Display User Information -->
-        <section>
-            <h3>User Information</h3>
-            <p>First Name: <%= rs.getString("first_name") %></p>
-            <p>Middle Name: <%= rs.getString("middle_name") %></p>
-            <p>Last Name: <%= rs.getString("last_name") %></p>
-            <p>Email: <%= rs.getString("email") %></p>
-            <p>Contact No: <%= rs.getString("contact_no") %></p>
-            <p>Branch: <%= rs.getString("branch") %></p>
-        </section>
-
+         <section>
+        <h3 align="center">User Information</h3><br><hr>
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" class="form-control" id="firstName" value="<%= rs.getString("first_name") %>" disabled>
+        </div>
+        <div class="form-group">
+            <label for="middleName">Middle Name:</label>
+            <input type="text" class="form-control" id="middleName" value="<%= rs.getString("middle_name") %>" disabled>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" class="form-control" id="lastName" value="<%= rs.getString("last_name") %>" disabled>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" value="<%= rs.getString("email") %>" disabled>
+        </div>
+        <div class="form-group">
+            <label for="contactNo">Contact No:</label>
+            <input type="text" class="form-control" id="contactNo" value="<%= rs.getString("contact_no") %>" disabled>
+        </div>
+        <div class="form-group">
+            <label for="branch">Branch:</label>
+            <input type="text" class="form-control" id="branch" value="<%= rs.getString("branch") %>" disabled>
+        </div>
+    </section>
+</div>
+<br><br>
         <!-- Change Password Section -->
-       
+<div class="container">
 
         <!-- Recent Activity Section -->
         <section>
-            <h3>Recent Activity</h3>
+            <h3 align="center">Your Products</h3><br><hr>
             <% 
                 // Fetch recent activity (products) where the seller_id matches the user's ID
                 String productsSQL = "SELECT * FROM products WHERE seller_id = ? AND sold_out = false";
@@ -251,23 +320,31 @@
                                     imgBase64 = Base64.getEncoder().encodeToString(imgData);
                                 }
                             }
+                            String description = productsRS.getString("description");
+                           if (description.length() > 20) {
+                               description = description.substring(0, 20) + "...";
+                           }
                     %>
-                    <div class="card">
-                        <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= productsRS.getString("product_name") %></h5>
-                            <p class="card-text">Product ID: <%= productsRS.getInt("product_id") %></p>
-                            <p class="card-text"><%= productsRS.getString("description") %><a href="" class="btn btn-link">more</a></p>
-                            <p class="card-text">Price: $<%= productsRS.getDouble("price") %></p>
-
-                            <button class="sold-out-button" onclick="showSoldOutDialog('<%= productId %>', <%= productsRS.getDouble("price") %>);">Sold Out</button>
-
-                        </div>
+                     <div class="col-md-3 mb-2">
+                <div class="card" style="width: 18rem;">
+                    <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= productsRS.getString("product_name") %></h5>
+                        <p class="card-text">Product ID: <%= productsRS.getInt("product_id") %></p>
+                        <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
+                        <p class="card-text">Price: $<%= productsRS.getDouble("price") %></p>
+                        <button class="btn btn-warning" onclick="showSoldOutDialog('<%= productId %>', <%= productsRS.getDouble("price") %>);">Sold Out</button>
+                        
                     </div>
+                </div>
+            </div>
+                    
+                
                     <% } // End of while loop %>
                 </div>
-        </section>
-
+        </section><br><br>
+        <!-- Recent Activity Section -->
+        
         <!-- Saved Items Section -->
        
         <%
