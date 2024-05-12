@@ -121,7 +121,17 @@
             float: left; /* Aligning the logo to the left */
         }
 
-
+        .container1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chart-container {
+            width: 1000px;
+            height: 400px;
+            margin: 10px;
+        }
+       
         /* Banner Section Styles */
         #banner {
             background-color: #f4f4f4;
