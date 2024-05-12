@@ -109,7 +109,17 @@
             float: left; /* Aligning the logo to the left */
         }
 
-
+        .container1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chart-container {
+            width: 1000px;
+            height: 400px;
+            margin: 10px;
+        }
+       
         /* Banner Section Styles */
         #banner {
             background-color: #f4f4f4;
@@ -389,10 +399,11 @@ try {
 
     </section>
   
-        <div id="chart_div"></div>
-        <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
-        <div id="curve_chart" style="width: 100%; height: 500px;"></div>
-
+    <div class="container1">
+        <div id="chart_div" class="chart-container"></div>
+        <div id="columnchart_values" class="chart-container"></div>
+        <div id="curve_chart" class="chart-container"></div>
+    </div>
 
    
    
