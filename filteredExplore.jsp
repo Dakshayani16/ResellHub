@@ -279,8 +279,8 @@ String priceRange = request.getParameter("priceRange");
                                 try {
                                     // Establish database connection
                                     Class.forName("org.mariadb.jdbc.Driver");
-                                    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
-                                     conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                                     conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                                    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
                                    // out.print(" ef"+category);
                                     if(category.equals("All") && priceRange.equals("All") && searchInput != null) {
                                        // out.print(" ef1"+category);
@@ -322,8 +322,21 @@ String priceRange = request.getParameter("priceRange");
 pstmt.setInt(2, maxPrice);
                                      // out.print(sqlQuery);
 
-                                    }else {
+                                    }else if(category.equals("All") && !priceRange.equals("All") && !searchInput.equals("")) {
+                                        String[] prices = priceRange.split(",");
+                                        int minPrice = Integer.parseInt(prices[0]);
+                                        int maxPrice = Integer.parseInt(prices[1]);
                                         
+                                        // Print the extracted values
+                                       
+                                        out.print("d4444");
+                                        // Your SQL query to fetch data from the product table based on the price field
+                                        String sqlQuery = "SELECT product_id, product_name, price, description FROM Products WHERE price BETWEEN ? AND ? AND sold_out = false AND product_name LIKE ?";
+                                      pstmt = conn.prepareStatement(sqlQuery);
+                                    pstmt.setInt(1, minPrice);
+                                    pstmt.setInt(2, maxPrice);
+                                    pstmt.setString(3, "%" + searchInput + "%");
+pstmt.setInt(2, maxPrice);
 
                                     }
                                     ResultSet rs = null;
