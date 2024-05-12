@@ -168,8 +168,8 @@ ResultSet rs = null;
 
 try {
     Class.forName("org.mariadb.jdbc.Driver");
-    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
-
+    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
     // SQL query to retrieve category and no_of_items from product_category table
     String sql = "SELECT category, no_of_items FROM product_category";
     pstmt = conn.prepareStatement(sql);
