@@ -90,7 +90,9 @@
             display: inline;
             float: left; /* Aligning the logo to the left */
         }
-
+        .row{
+    justify-content: center;
+}
         /* Banner Section Styles */
         #banner {
             background-color: #f4f4f4;
@@ -354,6 +356,7 @@
     <!-- Listings Section -->
 <!-- Listings Section -->
 <section id="listings">
+
     <div class="container">
         <div class="row">
             <!-- Images -->
@@ -374,6 +377,7 @@
                     </div>
                 </div>
             </div>
+
           </div>
             <!-- Description and Seller -->
             
