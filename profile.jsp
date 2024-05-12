@@ -191,6 +191,7 @@
             background-color: #555;
         }
     </style>
+    
 </head>
 <% if(session.getAttribute("username")==null){ 
     String url="login.jsp?message="+"Please Login to Continue";
@@ -222,6 +223,8 @@
             <h3 align="center">Recent Activities</h3><br><hr>
         </section>
     </div>
+
+
     <!-- Main Content Section -->
     <div class="container-c">
         <%
@@ -231,7 +234,8 @@
             ResultSet rs = null;
             try {
                 String user_id = (String) session.getAttribute("userID"); // Cast to String
-                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+              //  conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
                 String sql = "SELECT category, no_of_items FROM product_category";
                 stmt = conn.prepareStatement(sql);
                 rs = stmt.executeQuery();
@@ -244,28 +248,76 @@
                     itemCounts.add(rs.getInt("no_of_items"));
                 }
         %>
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script type="text/javascript">
-            google.charts.load("current", {packages:["corechart"]});
-            google.charts.setOnLoadCallback(drawChart);
-
-            function drawChart() {
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Category');
-                data.addColumn('number', 'No. of Items');
-                <% for (int i = 0; i < categories.size(); i++) { %>
-                    data.addRow(['<%= categories.get(i) %>', <%= itemCounts.get(i) %>]);
-                <% } %>
-                var options = {
-                    'title': 'Number of Items in Each Category',
-                    'width': 600,
-                    'height': 400,
-                    is3D: true,
-                };
-                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-                chart.draw(data, options);
-            }
-        </script>
+        <div class="container-c">
+            <%
+                // Fetch user information from the database
+                Connection conn1 = null;
+                PreparedStatement stmt1 = null;
+                ResultSet rs1 = null;
+                try {
+                    String sellerId = (String) session.getAttribute("userID"); // Cast to String
+                    // Establish connection to the database
+                    Class.forName("org.mariadb.jdbc.Driver"); // Load the MariaDB JDBC driver
+                    conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+        
+                    // Query to fetch total number of products
+                    String totalProductsQuery = "SELECT COUNT(*) AS total FROM products";
+                    stmt1 = conn1.prepareStatement(totalProductsQuery);
+                    rs1 = stmt1.executeQuery();
+                    int totalProducts = 0;
+                    if (rs1.next()) {
+                        totalProducts = rs1.getInt("total");
+                    }
+        
+                    // Query to fetch number of products posted by the seller
+                    String sellerProductsQuery = "SELECT COUNT(*) AS seller_products FROM products WHERE seller_id = ?";
+                    stmt1 = conn1.prepareStatement(sellerProductsQuery);
+                    stmt1.setString(1, sellerId);
+                    rs1 = stmt1.executeQuery();
+                    int sellerProducts = 0;
+                    if (rs1.next()) {
+                        sellerProducts = rs1.getInt("seller_products");
+                    }
+            %>
+            <div id="chart_div"></div>
+        
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+                google.charts.load("current", {packages:["corechart"]});
+                google.charts.setOnLoadCallback(drawChart);
+        
+                function drawChart() {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Seller');
+                    data.addColumn('number', 'Number of Products');
+                    data.addRow(['Seller Products', <%= sellerProducts %>]);
+                    data.addRow(['Other Products', <%= totalProducts - sellerProducts %>]);
+        
+                    var options = {
+                        'title': 'Products Posted by Seller vs. Other Products',
+                        'width': 600,
+                        'height': 400,
+                        is3D: true
+                    };
+        
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                    chart.draw(data, options);
+                }
+            </script>
+            <% } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                // Close connections
+                try {
+                    if (rs1 != null) rs1.close();
+                    if (stmt1 != null) stmt1.close();
+                    if (conn1 != null) conn1.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } %>
+        </div>
+        
         <%
             String sql2 = "SELECT * FROM user WHERE user_id = ?";
             stmt = conn.prepareStatement(sql2);
