@@ -1,3 +1,4 @@
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +9,12 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import javax.imageio.ImageIO;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -50,9 +57,16 @@ public class AddProduct extends HttpServlet {
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
+<<<<<<< HEAD
             // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
             conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
 
+=======
+            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "root");
+            // conn =
+            // DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub",
+            // "root", "AnishaNemade");
+>>>>>>> 5a140f044a01132d89242520057bb64ba28fd54b
             LOGGER.log(Level.INFO, "Database connection established successfully.");
 
             String insertProductQuery = "INSERT INTO products (product_name, seller_id,description, price) VALUES (?, ?, ?, ?);";
@@ -115,10 +129,19 @@ public class AddProduct extends HttpServlet {
 
                 Part filePart = request.getPart("image");
                 if (filePart != null) {
+                    // Resize and compress image
+                    BufferedImage originalImage = ImageIO.read(filePart.getInputStream());
+                    BufferedImage resizedImage = resizeImage(originalImage, 320, 320);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(resizedImage, "jpg", baos);
+                    baos.flush();
+                    byte[] imageBytes = baos.toByteArray();
+                    baos.close();
+
                     String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
                     PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
                     imageStmt.setInt(1, productId);
-                    imageStmt.setBinaryStream(2, filePart.getInputStream(), (int) filePart.getSize());
+                    imageStmt.setBytes(2, imageBytes);
                     imageStmt.executeUpdate();
                     LOGGER.log(Level.INFO, "Image inserted successfully into the database.");
                 } else {
@@ -151,6 +174,13 @@ public class AddProduct extends HttpServlet {
 
         // response.setIntHeader("Refresh", 5);
         // response.sendRedirect("index.jsp");
+    }
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        resizedImage.createGraphics().drawImage(
+                originalImage.getScaledInstance(targetWidth, targetHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        return resizedImage;
     }
 }
 

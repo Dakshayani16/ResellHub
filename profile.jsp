@@ -1,24 +1,42 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.Connection, java.sql.DriverManager, java.sql.PreparedStatement, java.sql.ResultSet" %>
+<%@ page import="java.io.ByteArrayOutputStream, java.io.IOException, java.util.Base64" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.sql.Blob" %>
+<%@ page import="java.util.Base64" %>
+<%@ page import="java.util.*" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - VJTI Resell Hub</title>
+    <!-- Font Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- CSS Styles -->
     <style>
         /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #ffffff
         }
         /* Navigation Bar Styles */
         nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
         nav ul {
             list-style: none;
@@ -33,7 +51,7 @@
             margin-left: 0; /* No margin for the first child */
         }
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
         nav h1 {
@@ -41,29 +59,24 @@
             display: inline;
             float: left; /* Aligning the logo to the left */
         }
-        .container {
+        .container-c {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
         }
-
         h2 {
             text-align: center;
         }
-
         section {
             margin-bottom: 30px;
         }
-
         form {
             margin-bottom: 20px;
         }
-
         label {
             display: block;
             margin-bottom: 5px;
         }
-
         input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -72,143 +85,381 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
-
-        button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
+        /* Card Grid Styles */
+        .card-grid {
+            display: grid;
+            /* Adjust column width based on available space */
+            gap: 20px; /* Spacing between cards */
         }
-
-        button[type="submit"]:hover {
-            background-color: #555;
-        }
-
-        .saved-items {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-
-        .item {
-            width: calc(33.33% - 10px);
-            margin-bottom: 20px;
-            background-color: #fff;
+        /* Card Styles */
+        .card {
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 10px;
-            box-sizing: border-box;
+            overflow: hidden;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex; /* Ensure elements inside the card align properly */
+            flex-direction: column; /* Stack the image and details vertically */
         }
-
-        .item img {
+        footer {
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
+            text-align: center;
+            padding: 100px 0;
+        }
+        .card img {
             width: 100%;
             height: auto;
             border-radius: 5px;
             margin-bottom: 10px;
         }
-
-        .item h4 {
+        .card h5 {
             margin: 0;
             font-size: 16px;
             color: #333;
         }
-
-        .item p {
+        .card p {
             margin: 10px 0;
             color: #666;
         }
-
-        .item button {
-            width: 48%;
-            padding: 8px;
+        /* Sold Out Button Styles */
+        .sold-out-button {
+            padding: 10px 20px;
+            background-color: #ff4d4d;
+            color: white;
             border: none;
             border-radius: 5px;
-            background-color: #333;
-            color: #fff;
-            font-size: 14px;
+            cursor: not-allowed;
+            transition: background-color 0.3s ease;
+        }
+        .sold-out-button:hover {
+            background-color: #e60000;
+        }
+        /* Dialog Styles */
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 450px; /* Adjust the width as needed */
+            height: 280px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            z-index: 1000; /* Ensure dialog is on top of other content */
+        }
+        .dialog label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .close-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
             cursor: pointer;
         }
-
-        .item button:hover {
+        .dialog input {
+            width: 87%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .dialog button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-warning {
+            color: #ffffff; /* Text color */
+            background-color: #FD5F04 !important; /* Orange background color */
+            border-color: #FD5F04 !important; /* Orange border color */
+        }
+        /* Hover state */
+        .btn-warning:hover {
+            color: #000000; /* Text color on hover */
+            background-color: #fe4d00 !important; /* Darker orange background color on hover */
+            border-color: #cc4d00 !important; /* Darker orange border color on hover */
+        }
+        .dialog button:hover {
             background-color: #555;
         }
     </style>
+    
 </head>
+<% if(session.getAttribute("username")==null){ 
+    String url="login.jsp?message="+"Please Login to Continue";
+    response.sendRedirect(url);
+}%>
 <body>
     <!-- Navigation Bar -->
     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+            <h1><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg" width=200 height=190>VJTI Resell Hub</h1>
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
                 <li><a href="profile.jsp">My Account</a></li>
-                <li><a href="login.jsp">Login</a></li>
+                <% if(session.getAttribute("username")==null){ %>
+                    <li><a href="login.jsp">Login</a></li>
+                <% }else{ %>
+                    <li><a href="conversations.jsp">Chats</a></li>
+                    <li><a href="favourites.jsp">Favourites</a></li>
+                    <li><a href="logout_process.jsp">Logout</a></li>
+                <% }%>
             </ul>
         </div>
     </nav>
-
-    <!-- Main Content Section -->
+    <br><br><br><br><br><br><br>
     <div class="container">
-        <h2>Welcome, [User's Name]!</h2>
-        
-        <!-- Change Password Section -->
         <section>
-            <h3>Change Password</h3>
-            <form action="change_password_process.jsp" method="POST">
-                <label for="old_password">Old Password:</label>
-                <input type="password" id="old_password" name="old_password" required>
-                <label for="new_password">New Password:</label>
-                <input type="password" id="new_password" name="new_password" required>
-                <label for="confirm_password">Confirm New Password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
-                <button type="submit">Change Password</button>
-            </form>
-        </section>
-
-        <!-- Recent Activity Section -->
-        <section>
-            <h3>Recent Activity</h3>
-            <!-- Display recent activity, such as listings, purchases, messages, etc. -->
-        </section>
-
-        <!-- Saved Items Section -->
-        <section>
-            <h3>Saved Items</h3>
-            <div class="saved-items">
-                <div class="item">
-                    <img src="item1.jpg" alt="Item 1">
-                    <h4>Product Name 1</h4>
-                    <p>Description of the saved item 1.</p>
-                    <button>View</button>
-                    <button>Remove</button>
-                </div>
-                <div class="item">
-                    <img src="item2.jpg" alt="Item 2">
-                    <h4>Product Name 2</h4>
-                    <p>Description of the saved item 2.</p>
-                    <button>View</button>
-                    <button>Remove</button>
-                </div>
-                <div class="item">
-                    <img src="item3.jpg" alt="Item 3">
-                    <h4>Product Name 3</h4>
-                    <p>Description of the saved item 3.</p>
-                    <button>View</button>
-                    <button>Remove</button>
-                </div>
-            </div>
+            <h3 align="center">Recent Activities</h3><br><hr>
         </section>
     </div>
 
-    <!-- Footer Section -->
-    <footer>
-        <!-- Your footer content here -->
-    </footer>
+
+    <!-- Main Content Section -->
+    <div class="container-c">
+        <%
+            // Fetch user information from the database
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            try {
+                String user_id = (String) session.getAttribute("userID"); // Cast to String
+              //  conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                String sql = "SELECT category, no_of_items FROM product_category";
+                stmt = conn.prepareStatement(sql);
+                rs = stmt.executeQuery();
+                // Lists to store category and no_of_items
+                List<String> categories = new ArrayList<>();
+                List<Integer> itemCounts = new ArrayList<>();
+                // Fetching data from result set
+                while (rs.next()) {
+                    categories.add(rs.getString("category"));
+                    itemCounts.add(rs.getInt("no_of_items"));
+                }
+        %>
+        <div class="container-c">
+            <%
+                // Fetch user information from the database
+                Connection conn1 = null;
+                PreparedStatement stmt1 = null;
+                ResultSet rs1 = null;
+                try {
+                    String sellerId = (String) session.getAttribute("userID"); // Cast to String
+                    // Establish connection to the database
+                    Class.forName("org.mariadb.jdbc.Driver"); // Load the MariaDB JDBC driver
+                    conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+        
+                    // Query to fetch total number of products
+                    String totalProductsQuery = "SELECT COUNT(*) AS total FROM products";
+                    stmt1 = conn1.prepareStatement(totalProductsQuery);
+                    rs1 = stmt1.executeQuery();
+                    int totalProducts = 0;
+                    if (rs1.next()) {
+                        totalProducts = rs1.getInt("total");
+                    }
+        
+                    // Query to fetch number of products posted by the seller
+                    String sellerProductsQuery = "SELECT COUNT(*) AS seller_products FROM products WHERE seller_id = ?";
+                    stmt1 = conn1.prepareStatement(sellerProductsQuery);
+                    stmt1.setString(1, sellerId);
+                    rs1 = stmt1.executeQuery();
+                    int sellerProducts = 0;
+                    if (rs1.next()) {
+                        sellerProducts = rs1.getInt("seller_products");
+                    }
+            %>
+            <div id="chart_div"></div>
+        
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+                google.charts.load("current", {packages:["corechart"]});
+                google.charts.setOnLoadCallback(drawChart);
+        
+                function drawChart() {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Seller');
+                    data.addColumn('number', 'Number of Products');
+                    data.addRow(['Seller Products', <%= sellerProducts %>]);
+                    data.addRow(['Other Products', <%= totalProducts - sellerProducts %>]);
+        
+                    var options = {
+                        'title': 'Products Posted by Seller vs. Other Products',
+                        'width': 600,
+                        'height': 400,
+                        is3D: true
+                    };
+        
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                    chart.draw(data, options);
+                }
+            </script>
+            <% } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                // Close connections
+                try {
+                    if (rs1 != null) rs1.close();
+                    if (stmt1 != null) stmt1.close();
+                    if (conn1 != null) conn1.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } %>
+        </div>
+        
+        <%
+            String sql2 = "SELECT * FROM user WHERE user_id = ?";
+            stmt = conn.prepareStatement(sql2);
+            stmt.setString(1, user_id);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+        %>
+        <!-- Display User Information -->
+        <section>
+            <h3 align="center">User Information</h3><br><hr>
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" class="form-control" id="firstName" value="<%= rs.getString("first_name") %>" disabled>
+            </div>
+            <div class="form-group">
+                <label for="middleName">Middle Name:</label>
+                <input type="text" class="form-control" id="middleName" value="<%= rs.getString("middle_name") %>" disabled>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" class="form-control" id="lastName" value="<%= rs.getString("last_name") %>" disabled>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" value="<%= rs.getString("email") %>" disabled>
+            </div>
+            <div class="form-group">
+                <label for="contactNo">Contact No:</label>
+                <input type="text" class="form-control" id="contactNo" value="<%= rs.getString("contact_no") %>" disabled>
+            </div>
+            <div class="form-group">
+                <label for="branch">Branch:</label>
+                <input type="text" class="form-control" id="branch" value="<%= rs.getString("branch") %>" disabled>
+            </div>
+        </section>
+    </div>
+    <br><br>
+    <!-- Change Password Section -->
+    <div class="container">
+        <!-- Recent Activity Section -->
+        <section>
+            <h3 align="center">Your Products</h3><br><hr>
+            <% 
+                // Fetch recent activity (products) where the seller_id matches the user's ID
+                String productsSQL = "SELECT * FROM products WHERE seller_id = ? AND sold_out = false";
+                PreparedStatement productsStmt = conn.prepareStatement(productsSQL);
+                productsStmt.setString(1, user_id);
+                ResultSet productsRS = productsStmt.executeQuery();
+            %>
+            <div class="card-grid">
+                <% 
+                    while (productsRS.next()) {
+                        int productId = productsRS.getInt("product_id"); // Get product ID for each product
+                        PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ? ");
+                        pstmtImage.setInt(1, productId);
+                        ResultSet rsImage = pstmtImage.executeQuery();
+                        String imgBase64 = "";
+                        if (rsImage.next()) {
+                            Blob imageBlob = rsImage.getBlob("image");
+                            if (imageBlob != null) {
+                                byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+                                imgBase64 = Base64.getEncoder().encodeToString(imgData);
+                            }
+                        }
+                        String description = productsRS.getString("description");
+                        if (description.length() > 20) {
+                            description = description.substring(0, 20) + "...";
+                        }
+                %>
+                <div class="col-md-3 mb-2">
+                    <div class="card" style="width: 18rem;">
+                        <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= productsRS.getString("product_name") %></h5>
+                            <p class="card-text">Product ID: <%= productsRS.getInt("product_id") %></p>
+                            <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
+                            <p class="card-text">Price: $<%= productsRS.getDouble("price") %></p>
+                            <button class="btn btn-warning sold-out-button" onclick="showSoldOutDialog('<%= productId %>', <%= productsRS.getDouble("price") %>);">Sold Out</button>
+                        </div>
+                    </div>
+                </div>
+                <% } // End of while loop %>
+            </div>
+        </section>
+        <br><br>
+        <!-- Recent Activity Section -->
+        <!-- Saved Items Section -->
+        <%
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        %>
+    </div>
+    <div id="soldOutDialog" class="dialog">
+        <span class="close-icon" onclick="closeSoldOutDialog()">&#10006;</span> <!-- Close icon -->
+        <form action="transaction_process.jsp" method="POST" id="soldOutForm">
+            <label for="product">Product ID:</label>
+            <input type="text" id="productId" name="productId" required>
+            <label for="buyerId">Buyer ID:</label>
+            <input type="text" id="buyerId" name="buyerId" required>
+            <label for="closingPrice">Closing Price:</label>
+            <input type="text" id="closingPrice" name="closingPrice" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        function showSoldOutDialog(productId, price) {
+            if (productId == null || productId === "") {
+                console.log("Product ID is invalid:", productId);
+                return;
+            }
+            if (price == null || price === "") {
+                console.log("Price is invalid:", price);
+                return;
+            }
+            var parsedProductId = parseInt(productId);
+            var parsedPrice = parseFloat(price);
+            if (isNaN(parsedProductId)) {
+                console.log("Failed to parse Product ID:", productId);
+                return;
+            }
+            if (isNaN(parsedPrice)) {
+                console.log("Failed to parse Price:", price);
+                return;
+            }
+            document.getElementById('productId').value = parsedProductId;
+            document.getElementById('closingPrice').value = parsedPrice;
+            document.getElementById('soldOutDialog').style.display = 'block';
+        }
+
+        function closeSoldOutDialog() {
+            document.getElementById('soldOutDialog').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

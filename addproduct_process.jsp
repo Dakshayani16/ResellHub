@@ -25,8 +25,13 @@ int condition_id=0;
 int user_id=Integer.parseInt((String) session.getAttribute("userID"));
 try {
     Class.forName("org.mariadb.jdbc.Driver");
+<<<<<<< HEAD
     Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
     // Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+=======
+//   Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+ Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+>>>>>>> 5a140f044a01132d89242520057bb64ba28fd54b
     String insertProductConditionQuery = "INSERT INTO condition_of_product (buy_year, description) VALUES (?, ?)";
     PreparedStatement productStmt1 = conn.prepareStatement(insertProductConditionQuery, Statement.RETURN_GENERATED_KEYS);
     productStmt1.setInt(1, buy_year);
@@ -64,13 +69,61 @@ if (affectedRows > 0) {
         }
     }
 
-    // Part filePart = request.getPart("image");
-    // InputStream fileContent = filePart.getInputStream();
-    // String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
-    // PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
-    // imageStmt.setInt(1, productId);
-    // imageStmt.setBlob(2, fileContent);
-    // imageStmt.executeUpdate();
+    Part filePart = request.getPart("image");
+                if (filePart != null) {
+                    // Resize and compress image
+                    BufferedImage originalImage = ImageIO.read(filePart.getInputStream());
+                    BufferedImage resizedImage = resizeImage(originalImage, 320, 320);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(resizedImage, "jpg", baos);
+                    baos.flush();
+                    byte[] imageBytes = baos.toByteArray();
+                    baos.close();
+
+                    String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
+                    PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
+                    imageStmt.setInt(1, productId);
+                    imageStmt.setBytes(2, imageBytes);
+                    imageStmt.executeUpdate();
+                    LOGGER.log(Level.INFO, "Image inserted successfully into the database.");
+                } else {
+                    throw new ServletException("No file uploaded or file size is zero.");
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            LOGGER.log(Level.SEVERE, "An error occurred while processing the request.", e);
+            throw new ServletException("An error occurred while processing the request.", e);
+        } finally {
+            // Close resources
+            try {
+                if (generatedKeys != null) {
+                    generatedKeys.close();
+                }
+                if (productStmt != null) {
+                    productStmt.close();
+                }
+                if (productStmt1 != null) {
+                    productStmt1.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error closing resources.", e);
+                e.printStackTrace();
+            }
+        }
+
+        // response.setIntHeader("Refresh", 5);
+        // response.sendRedirect("index.jsp");
+    
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        resizedImage.createGraphics().drawImage(
+                originalImage.getScaledInstance(targetWidth, targetHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        return resizedImage;
+    }
 
     conn.close();
 } catch (Exception e) {

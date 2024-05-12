@@ -24,12 +24,22 @@
       padding: 0;
     }
     /* Navigation Bar Styles */
-        nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+       nav {
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        footer {
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
+            text-align: center;
+            padding: 100px 0;
         }
         nav ul {
             list-style: none;
@@ -44,7 +54,7 @@
             margin-left: 0; /* No margin for the first child */
         }
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
         nav h1 {
@@ -52,11 +62,11 @@
             display: inline;
             float: left; /* Aligning the logo to the left */
         }
-    .container {
+  .container-c {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-    }
+    } 
     .chat-box {
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -117,6 +127,10 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
+    a {
+    color: inherit; /* Use the color inherited from its parent */
+    text-decoration: none; /* Optional: Remove underline */
+}
     .chat-footer button {
       padding: 10px 20px;
       border: none;
@@ -127,11 +141,20 @@
     }
   </style>
 </head>
+<% if(session.getAttribute("username")==null){ 
+ 
+			String url="login.jsp?message="+"Please Login to Continue";
+        	response.sendRedirect(url);
+}
+%>
 <%
     Connection conn = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
-        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");}catch(Exception e){out.print(e+"");}
+        	conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+          // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+        
+        }catch(Exception e){out.print(e+"");}
     
     
     String send_message = request.getParameter("send_message");
@@ -149,6 +172,16 @@
         sellerId=""+rs.getInt("seller_id");
       }
     }catch(Exception e){out.print(e);}
+
+    String receivername="";
+    String selectQuery3 = "SELECT first_name,last_name FROM user WHERE user_id = ?;";
+    try{ PreparedStatement pstmt2 = conn.prepareStatement(selectQuery3);
+        pstmt2.setString(1, sellerId);
+        ResultSet rs = pstmt2.executeQuery();
+      if(rs.next()){
+        receivername=rs.getString("first_name")+" "+rs.getString("last_name");
+      }
+    }catch(Exception e){out.print(e);}
     
     
     if(send_message!=null){
@@ -164,21 +197,32 @@
 %>
 
 <body>
-    <!-- Navigation Bar -->
-    <nav>
+     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+       
+            <h1><a href="index.jsp"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+</svg></a><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
+<br><br><br><br><br><br><br>
 
     <!-- Banner Section -->
     <%
@@ -199,11 +243,11 @@
 
 <!-- Chat container -->
  <!-- Listings Section -->
-    <div class="container">
+    <div class="container-c">
     <div class="chat-box">
       <div class="chat-header">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0khaUcbpblqXKUuxIpxyGB9VqRKmENQZWjbk8uXGEIg&s" alt="Receiver Profile Picture">
-        <h2>Receiver</h2>
+        
+        <h2><%=receivername%></h2>
       </div>
       <div class="chat-messages">
     <%
@@ -232,8 +276,8 @@
 
       <div class="chat-footer">
       <form method="post">
-        <input type="text" name="send_message" placeholder="Type your message...">
-        <input type="submit" value="Send">
+        <input type="text" width=20 name="send_message" placeholder="Type your message...">
+        <input type="submit" class="btn btn-success" value="Send">
       </form>
       </div>
     </div>
