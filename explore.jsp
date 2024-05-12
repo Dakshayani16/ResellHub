@@ -47,134 +47,126 @@ body {
 }
 
 /* Navigation Bar Styles */
-nav {
-    background-color: #333;
-    color: #fff;
-    padding: 30px 0;
-    text-align: right;
-    font-family: 'Poppins', sans-serif;
-}
+ /* Navigation Bar Styles */
+        nav {
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
+            text-align: right;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-left: 20px; /* Adjusted from margin-right to margin-left */
+        }
+        nav ul li:first-child {
+            margin-left: 0; /* No margin for the first child */
+        }
+        nav ul li a {
+            color: #000; /* Black font color */
+            text-decoration: none;
+        }
+        nav h1 {
+            margin: 0;
+            display: inline;
+            float: left; /* Aligning the logo to the left */
+        }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+        /* Banner Section Styles */
+        #banner {
+            background-color: #FD5F04; /* Orange background color */
+            padding: 50px 0;
+            text-align: center;
+            color: #FFF; /* White font color */
+        }
+        #banner h2 {
+            margin: 0;
+            font-size: 36px;
+        }
+        #banner p {
+            margin-top: 20px;
+            font-size: 18px;
+        }
 
-nav ul li {
-    display: inline;
-    margin-left: 20px; /* Adjusted from margin-right to margin-left */
-}
+        /* Search Section Styles */
+        #search {
+            background-color: #FD5F04; /* Orange background color */
+            padding: 20px 0;
+            text-align: center;
+            color: #FFF; /* White font color */
+        }
+        #search form {
+            display: inline-block;
+        }
+        #search input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #fff; /* White border */
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+        #search button {
+            background-color: #FFF; /* White background */
+            color: #FD5F04; /* Orange font color */
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            margin-right: 4px;
+        }
 
-nav ul li:first-child {
-    margin-left: 0; /* No margin for the first child */
-}
+        /* Listings Section Styles */
+        #listings {
+            padding: 50px 0;
+        }
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+        .listing-item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .listing-item h3 {
+            margin-top: 10px;
+        }
+        .listing-item p {
+            margin-top: 5px;
+        }
+        .btn-warning {
+      color: #ffffff; /* Text color */
+      background-color: #FD5F04 !important; /* Orange background color */
+      border-color: #FD5F04 !important; /* Orange border color */
+    }
 
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-}
+    /* Hover state */
+    .btn-warning:hover {
+      color: #000000; /* Text color on hover */
+      background-color: #fe4d00 !important; /* Darker orange background color on hover */
+      border-color: #cc4d00 !important; /* Darker orange border color on hover */
+    }
 
-nav h1 {
-    margin: 0;
-    display: inline;
-    float: left; /* Aligning the logo to the left */
-}
-
-/* Banner Section Styles */
-#banner {
-    background-color: #f4f4f4;
-    padding: 50px 0;
-    text-align: center;
-}
-
-#banner h2 {
-    margin: 0;
-    font-size: 36px;
-}
-
-#banner p {
-    margin-top: 20px;
-    font-size: 18px;
-}
-
-/* Search Section Styles */
-#search {
-    background-color: #f4f4f4;
-    padding: 20px 0;
-    text-align: center;
-}
-
-#searchForm {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#searchInput,
-#search button {
-    height: 40px; /* Set the height */
-    margin: 4px; /* Set the margin */
-    margin-top: 4px;
-}
-
-#searchInput {
-    padding: 10px;
-    width: 200px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-}
-
-#search button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-    margin-top: 4px;
-}
-
-.row{
-    align-items: center;
-    justify-content: center;
-}
-
-/* Listings Section Styles */
-#listings {
-    padding: 50px 0;
-}
-
-.listings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-gap: 20px;
-}
-
-.listing-item img {
-    max-width: 100%;
-    height: auto;
-}
-
-.listing-item h3 {
-    margin-top: 10px;
-}
-
-.listing-item p {
-    margin-top: 5px;
-}
-
-/* Footer Styles */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-}
+        /* Footer Styles */
+        footer {
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
+            text-align: center;
+            padding: 100px 0;
+        }
 
     </style>
     
@@ -184,18 +176,29 @@ footer {
     <!-- Navigation Bar -->
     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+        
+            <h1><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
+<br><br><br><br><br><br><br>
+
 
     <!-- Banner Section -->
     <section id="banner">
@@ -209,7 +212,7 @@ footer {
 <section id="search">
     <div class="container">
         <div class="row">
-            <div class="col-md-8"> <!-- Adjust column width as needed -->
+            <div class="col-md-12"> <!-- Adjust column width as needed -->
                 <form id="searchForm" action="filteredExplore.jsp" method="GET">
                     <input type="hidden" name="category" id="category" value="All">
                     <input type="hidden" name="priceRange" id="priceRange" value="All">
@@ -295,6 +298,7 @@ footer {
                        String categoryName = rs.getString("category");
                        int numofitem = rs.getInt("no_of_items");
                     //    out.print("k");
+                    if(numofitem>0){
 
            %>
            <div class="row mb-4">
@@ -305,7 +309,7 @@ footer {
            </div>
            <div class="row">
                <%  
-                   PreparedStatement pstmtProducts = conn.prepareStatement("SELECT product_id FROM productcategories WHERE category_id = ?");
+                   PreparedStatement pstmtProducts = conn.prepareStatement("SELECT product_id FROM productcategories WHERE category_id = ? LIMIT 4");
                    pstmtProducts.setInt(1, categoryId);
                    ResultSet rsProducts = pstmtProducts.executeQuery();
 
@@ -344,23 +348,22 @@ footer {
                     <div class="card-body">
                         <h5 class="card-title"><%= productname %></h5>
                         <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
-                        <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-primary">Rs. <%= price %></a>
+                        <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-warning">Rs. <%= price %></a>
                     </div>
                 </div>
             </div>
             
                <%  
                        }
-                   }
-               %>
+                   }               %>
            </div>
            <div class="row justify-content-end">
                <div class="col-auto">
-                   <a href="listing.jsp?category=<%= categoryId %>" class="btn btn-link">More</a>
+                   <a href="listings.jsp?category=<%= categoryId %>" class="btn btn-link">More</a>
                </div>
            </div>
            <%  
-                   }
+                     } }
                } catch (Exception e) {
                 out.print(e);
                    e.printStackTrace();

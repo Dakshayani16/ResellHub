@@ -64,13 +64,61 @@ if (affectedRows > 0) {
         }
     }
 
-    // Part filePart = request.getPart("image");
-    // InputStream fileContent = filePart.getInputStream();
-    // String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
-    // PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
-    // imageStmt.setInt(1, productId);
-    // imageStmt.setBlob(2, fileContent);
-    // imageStmt.executeUpdate();
+    Part filePart = request.getPart("image");
+                if (filePart != null) {
+                    // Resize and compress image
+                    BufferedImage originalImage = ImageIO.read(filePart.getInputStream());
+                    BufferedImage resizedImage = resizeImage(originalImage, 320, 320);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(resizedImage, "jpg", baos);
+                    baos.flush();
+                    byte[] imageBytes = baos.toByteArray();
+                    baos.close();
+
+                    String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
+                    PreparedStatement imageStmt = conn.prepareStatement(insertImageQuery);
+                    imageStmt.setInt(1, productId);
+                    imageStmt.setBytes(2, imageBytes);
+                    imageStmt.executeUpdate();
+                    LOGGER.log(Level.INFO, "Image inserted successfully into the database.");
+                } else {
+                    throw new ServletException("No file uploaded or file size is zero.");
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            LOGGER.log(Level.SEVERE, "An error occurred while processing the request.", e);
+            throw new ServletException("An error occurred while processing the request.", e);
+        } finally {
+            // Close resources
+            try {
+                if (generatedKeys != null) {
+                    generatedKeys.close();
+                }
+                if (productStmt != null) {
+                    productStmt.close();
+                }
+                if (productStmt1 != null) {
+                    productStmt1.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error closing resources.", e);
+                e.printStackTrace();
+            }
+        }
+
+        // response.setIntHeader("Refresh", 5);
+        // response.sendRedirect("index.jsp");
+    
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        resizedImage.createGraphics().drawImage(
+                originalImage.getScaledInstance(targetWidth, targetHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        return resizedImage;
+    }
 
     conn.close();
 } catch (Exception e) {
