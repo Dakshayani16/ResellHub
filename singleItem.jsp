@@ -59,12 +59,15 @@
         }
 
         /* Navigation Bar Styles */
-        nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+       nav {
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
         nav ul {
             list-style: none;
@@ -79,7 +82,7 @@
             margin-left: 0; /* No margin for the first child */
         }
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
         nav h1 {
@@ -151,10 +154,11 @@
 
         /* Footer Styles */
         footer {
-            background-color: #333;
-            color: #fff;
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
             text-align: center;
-            padding: 10px 0;
+            padding: 100px 0;
         }
     </style>
 </head>
@@ -168,18 +172,30 @@
     <!-- Navigation Bar -->
     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+        
+            <h1><a href="explore.jsp"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+</svg></a><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
+<br><br><br><br><br><br><br>
 
     <!-- Banner Section -->
     <%
@@ -338,85 +354,75 @@
 
     <!-- Listings Section -->
     <!-- Listings Section -->
+<!-- Listings Section -->
 <section id="listings">
-  <div class="container">
 
-    
+    <div class="container">
+        <div class="row">
+            <!-- Images -->
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
+                </div>
+            </div>
 
-    
-    <div class="row">
-      <!-- Ratings -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Ratings</h5>
-            <!-- Insert your rating mechanism here (e.g., stars or progress bar) -->
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h3 class="card-text">Proposed Price: Rs.<%=price%>/-</h3>
+                        <p class="card-text text-container"><%=description%></p>
+                        <h3 class="card-text">Condition</h3>
+                        <p class="card-text"><%=condition_description%></p>
+                        <p class="card-text"><small class="text-muted">Used for <%=used_for%> year</small></p>
+                    </div>
+                </div>
+            </div>
+
+          </div>
+            <!-- Description and Seller -->
             
-            <div class="ratings">
-                 <%-- Display filled stars for i times --%>
-                <% for (int j = 0; j < averageRating; j++) { %>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                    </svg>
-                <% } %>
-                
-                <%-- Display lined stars for (5 - i) times --%>
-                <% for (int j = 0; j < (5 - averageRating); j++) { %>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
-                      <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
-                    </svg>
-                <% } %>
-              </div>
-            <!-- Example of a heart icon for marking as favorite -->
-           <% if(fav){ %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-              </svg>
-           <% }else{ %>
-           <a href="singleItem.jsp?addFav=k&item=<%= product_id %>">
-           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-              <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-            </svg></a>
-               <% } %>         
-      <div class="row">
-          <div class="col-md-12">
-              <!-- Product Name -->
-              <h1><%=product_name%></h1>
-          </div>
-      </div>
-      <div class="row">
-          <!-- Images -->
-          <div class="col-md-6">
-              <div class="card mb-3">
-                  <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
-              </div>
-              <div class="card mb-3">
-                  <div class="card-body">
-                      <h5 class="card-title">Ratings</h5>
-                      <div class="ratings">
-                          <!-- Example using stars -->
-                          <span class="fa fa-star checked"></span>
-                          <span class="fa fa-star checked"></span>
-                          <span class="fa fa-star checked"></span>
-                          <span class="fa fa-star"></span>
-                          <span class="fa fa-star"></span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <!-- Description and Seller -->
-          <div class="col-md-6">
-              <div class="card mb-3">
-                  <div class="card-body">
-                      <h3 class="card-text">Proposed Price: Rs.<%=price%>/-</h3>
-                      <p class="card-text text-container"><%=description%></p>
+                <div class="row">
+                    <!-- Ratings -->
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Ratings</h5>
+                                <!-- Insert your rating mechanism here (e.g., stars or progress bar) -->
+                                <div class="ratings">
+                                    <%-- Display filled stars for i times --%>
+                                    <% for (int j = 0; j < averageRating; j++) { %>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    <% } %>
+                                    <%-- Display lined stars for (5 - i) times --%>
+                                    <% for (int j = 0; j < (5 - averageRating); j++) { %>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                                        </svg>
+                                    <% } %>
+                                </div>
+                                <!-- Example of a heart icon for marking as favorite -->
+                                <% if(fav){ %>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                    </svg>
+                                <% }else{ %>
+                                    <a href="singleItem.jsp?addFav=k&item=<%= product_id %>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+</svg>
+                                    </a>
+                                <% } %>
+                                <!-- End of example -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Seller Info -->
+                    <div class="col">
+                        
                     
-                      <h3 class="card-text">Condition</h3>
-                      <p class="card-text"><%=condition_description%></p>
-                      <p class="card-text"><small class="text-muted">Used for <%=used_for%> year</small></p>
-                  </div>
-              </div>
-              <div class="card mb-3">
+                    <div class="card mb-3">
                   <div class="card-body">
                       <h3 class="ps-2 card-title">Seller</h3>
                       <div class="row g-0">
@@ -435,9 +441,13 @@
                   </div>
               </div>
           </div>
-      </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="row">
+</section>
+
+<div class="row">
       <!-- Ratings -->
       
         <div class="card">
@@ -469,15 +479,6 @@
 
           </div>
         </div>
-      
-      
-    </div>
-  
-
-  </div>
-</section>
-
-
     <!-- Footer -->
     <footer>
         <div class="container">

@@ -51,36 +51,32 @@
             margin: 0 auto;
             height: 50%;
         }
-
-        /* Navigation Bar Styles */
-        nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+ nav {
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
-
         nav ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-
         nav ul li {
             display: inline;
             margin-left: 20px; /* Adjusted from margin-right to margin-left */
         }
-
         nav ul li:first-child {
             margin-left: 0; /* No margin for the first child */
         }
-
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
-
         nav h1 {
             margin: 0;
             display: inline;
@@ -108,7 +104,21 @@
         #listings {
             padding: 50px 0;
         }
+        .bg-orange {
+            background-color: #FD5F04 !important; /* Orange background color */
+        }
+           .btn-warning {
+      color: #ffffff; /* Text color */
+      background-color: #FD5F04 !important; /* Orange background color */
+      border-color: #FD5F04 !important; /* Orange border color */
+    }
 
+    /* Hover state */
+    .btn-warning:hover {
+      color: #000000; /* Text color on hover */
+      background-color: #fe4d00 !important; /* Darker orange background color on hover */
+      border-color: #cc4d00 !important; /* Darker orange border color on hover */
+    }
         .listings-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -130,10 +140,11 @@
 
         /* Footer Styles */
         footer {
-            background-color: #333;
-            color: #fff;
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
             text-align: center;
-            padding: 10px 0;
+            padding: 100px 0;
         }
     </style>
 </head>
@@ -148,37 +159,47 @@
     <!-- Navigation Bar -->
     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+        
+            <h1><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
+<br><br><br><br><br><br><br>
 
 
     <!-- Banner Section -->
-    <section id="banner">
-        <div class="container">
-            <h2>Welcome to VJTI Resell Hub</h2>
-            <p>Buy and sell items near you. Discover great deals!</p>
-        </div>
-    </section>
-
-    <section id="search">
-        <div class="container">
-            <form action="#" method="GET">
-                <input type="text" name="search" placeholder="Search...">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-    </section>
-
+   <header class="bg-orange py-2">
+                <div class="container px-5">
+                    <div class="row gx-5 align-items-center justify-content-center">
+                        <div class="col-lg-8 col-xl-7 col-xxl-6">
+                            <div class="my-5 text-center text-xl-start">
+                                <h1 class="display-5 fw-bolder text-white mb-2">Mark them for later!</h1>
+                                <p class="lead fw-normal text-white-50 mb-4">Go back to items you liked earlier....</p>
+                                
+                            </div>
+                        </div>
+                        <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" fill="currentColor" class="bi bi-hearts" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015m6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343M7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358"/>
+</svg>
+                    </div>
+                </div>
+            </header>
     <!-- Listings Section -->
     <section id="listings">
         <div class="container">
@@ -228,7 +249,7 @@
                         <div class="card-body">
                             <h5 class="card-title"><%= productName %></h5>
                             <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
-                            <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-primary">Rs. <%= price %></a>
+                            <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-warning">Rs. <%= price %></a>
                         </div>
                     </div>
                 </div>
