@@ -388,12 +388,12 @@ try {
         </div>
 
     </section>
-    <div classes="container">
+  
         <div id="chart_div"></div>
         <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
         <div id="curve_chart" style="width: 100%; height: 500px;"></div>
 
-    </div>
+
    
    
 <%-- Dashboard --%>
