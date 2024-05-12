@@ -204,10 +204,11 @@
                     try {
                         // Connect to the database
                         Class.forName("org.mariadb.jdbc.Driver");
-                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-
+                       // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                       conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                   
                         // Execute the query to fetch product records
-                        String query = "SELECT p.product_id, p.product_name, p.seller_id, p.price, p.posted_at, p.condition_id, p.sold, AVG(r.rating) AS rating " +
+                        String query = "SELECT p.product_id, p.product_name, p.seller_id, p.price, p.posted_at, p.condition_id, p.sold_out, AVG(r.rating) AS rating " +
                                         "FROM products p " +
                                         "LEFT JOIN reviews r ON p.product_id = r.product_id " +
                                         "GROUP BY p.product_id";
@@ -223,7 +224,7 @@
                             Timestamp postedAt = rs.getTimestamp("posted_at");
                             int condition_id = rs.getInt("condition_id");
                             double rating = rs.getDouble("rating");
-                            String sold = rs.getString("sold");
+                            String sold = rs.getString("sold_out");
 
                             // Get seller name
                             String sellerName = "";
