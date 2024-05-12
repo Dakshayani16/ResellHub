@@ -51,35 +51,32 @@
             height: 50%;
         }
 
-        /* Navigation Bar Styles */
-        nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+       nav {
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
-
         nav ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-
         nav ul li {
             display: inline;
             margin-left: 20px; /* Adjusted from margin-right to margin-left */
         }
-
         nav ul li:first-child {
             margin-left: 0; /* No margin for the first child */
         }
-
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
-
         nav h1 {
             margin: 0;
             display: inline;
@@ -126,13 +123,28 @@
         .listing-item p {
             margin-top: 5px;
         }
+.bg-orange {
+            background-color: #FD5F04 !important; /* Orange background color */
+        }
+           .btn-warning {
+      color: #ffffff; /* Text color */
+      background-color: #FD5F04 !important; /* Orange background color */
+      border-color: #FD5F04 !important; /* Orange border color */
+    }
 
+    /* Hover state */
+    .btn-warning:hover {
+      color: #000000; /* Text color on hover */
+      background-color: #fe4d00 !important; /* Darker orange background color on hover */
+      border-color: #cc4d00 !important; /* Darker orange border color on hover */
+    }
         /* Footer Styles */
         footer {
-            background-color: #333;
-            color: #fff;
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
             text-align: center;
-            padding: 10px 0;
+            padding: 100px 0;
         }
     </style>
 </head>
@@ -145,38 +157,50 @@
 
 <body>
     <!-- Navigation Bar -->
-    <nav>
+     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+        
+            <h1><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
+<br><br><br><br><br><br><br>
 
 
     <!-- Banner Section -->
-    <section id="banner">
-        <div class="container">
-            <h2>Welcome to VJTI Resell Hub</h2>
-            <p>Buy and sell items near you. Discover great deals!</p>
-        </div>
-    </section>
-
-    <section id="search">
-        <div class="container">
-            <form action="#" method="GET">
-                <input type="text" name="search" placeholder="Search...">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-    </section>
+   <header class="bg-orange py-2">
+                <div class="container px-5">
+                    <div class="row gx-5 align-items-center justify-content-center">
+                        <div class="col-lg-8 col-xl-7 col-xxl-6">
+                            <div class="my-5 text-center text-xl-start">
+                                <h1 class="display-5 fw-bolder text-white mb-2">Chat with ease!</h1>
+                                <p class="lead fw-normal text-white-50 mb-4">Get Exciting deals with negotiations...</p>
+                                
+                            </div>
+                        </div>
+                        <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+  <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+  <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2"/>
+</svg></div>
+                    </div>
+                </div>
+            </header>
 
     <!-- Listings Section -->
     <section id="listings">
@@ -232,9 +256,9 @@
                 <div class="col-md-4">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <h5 class="card-title"><%= otherPartyName %></h5>
-                            <p class="card-text">Conversation ID: <%= conversationID %></p>
-                            <a href="chatpage.jsp?convo=<%= conversationID %>" class="btn btn-primary">View Conversation</a>
+                            <h5 class="card-title"><%= otherPartyName %></h5><br><hr>
+                            <!-- <p class="card-text">Conversation ID: <%= conversationID %></p> -->
+                            <a href="chatpage.jsp?convo=<%= conversationID %>" class="btn btn-warning">View Conversation</a>
                         </div>
                     </div>
                 </div>
