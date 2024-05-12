@@ -338,6 +338,40 @@ pstmt.setInt(2, maxPrice);
                                     pstmt.setString(3, "%" + searchInput + "%");
 pstmt.setInt(2, maxPrice);
 
+                                    } else if(!category.equals("All") && !priceRange.equals("All") && !searchInput.equals("")) {
+                                        Statement stmt= conn.createStatement();;
+                                        category = category.trim().toLowerCase();
+        String query = "SELECT category_id FROM product_category WHERE category = '" + category + "'";
+        //out.println("Query: " + query);
+        ResultSet rsCategoryId = stmt.executeQuery(query);
+                                        int  categoryId=-1;
+                                      //  out.print("dfghb"+ categoryId);
+                                        if (rsCategoryId.next()) {
+                                            // Move the cursor to the first row and retrieve the category_id
+                                            categoryId = rsCategoryId.getInt("category_id");
+                                            //out.print("dfghb"+ categoryId);
+                                        } else {
+                                            // Handle case where no rows were found
+                                            out.print("No category found for: " + category);
+                                        }
+                                       
+                                        String[] prices = priceRange.split(",");
+                                        int minPrice = Integer.parseInt(prices[0]);
+                                        int maxPrice = Integer.parseInt(prices[1]);
+                                        
+                                        // Print the extracted values
+                                       
+                                        out.print("d44441");
+                                        // Your SQL query to fetch data from the product table based on the price field
+                                        String sqlQuery = "SELECT product_id, product_name, price, description FROM Products WHERE price BETWEEN ? AND ? AND sold_out = false AND product_name LIKE ? AND product_id IN (SELECT product_id FROM productcategories WHERE category_id = ?)";
+                                      pstmt = conn.prepareStatement(sqlQuery);
+                                    pstmt.setInt(1, minPrice);
+                                    pstmt.setInt(2, maxPrice);
+                                    pstmt.setString(3, "%" + searchInput + "%");
+
+pstmt.setInt(2, maxPrice);
+pstmt.setInt(4, categoryId);   
+
                                     }
                                     ResultSet rs = null;
                                     // Execute the query
