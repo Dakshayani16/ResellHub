@@ -283,7 +283,7 @@ String priceRange = request.getParameter("priceRange");
                                    // out.print(" ef"+category);
                                     if(category.equals("All") && priceRange.equals("All") && searchInput != null) {
                                        // out.print(" ef1"+category);
-                                        pstmt = conn.prepareStatement("SELECT product_id, product_name, price, description FROM Products WHERE product_name LIKE ?");
+                                        pstmt = conn.prepareStatement("SELECT product_id, product_name, price, description FROM Products WHERE product_name LIKE ? AND sold_out = false");
                                         pstmt.setString(1, "%" + searchInput + "%");
                                     } else if(!category.equals("All") && priceRange.equals("All") && searchInput == "") {
 
@@ -315,7 +315,7 @@ String priceRange = request.getParameter("priceRange");
                                        
                                         
                                         // Your SQL query to fetch data from the product table based on the price field
-                                        String sqlQuery = "SELECT product_id, product_name, price, description FROM Products WHERE price BETWEEN ? AND ?";
+                                        String sqlQuery = "SELECT product_id, product_name, price, description FROM Products WHERE price BETWEEN ? AND ? AND sold_out = false";
                                       pstmt = conn.prepareStatement(sqlQuery);
                                     pstmt.setInt(1, minPrice);
 pstmt.setInt(2, maxPrice);

@@ -150,7 +150,7 @@
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
-                <li><a href="profile.jsp">My Account</a></li>
+                <li><a href="abc.jsp">My Account</a></li>
                 <li><a href="login.jsp">Login</a></li>
             </ul>
         </div>

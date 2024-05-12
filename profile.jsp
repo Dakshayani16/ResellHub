@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ page import="java.sql.Connection, java.sql.DriverManager, java.sql.PreparedStatement, java.sql.ResultSet" %>
-
-<%@ page import="java.sql.Blob" %>
-
-<%@ page import="java.util.Base64" %>
+<%@ page import="java.io.ByteArrayOutputStream, java.io.IOException, java.util.Base64" %>
 <%@ page import="java.sql.SQLException" %>
+<%@ page import="java.sql.Blob" %>
+<%@ page import="java.util.Base64" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -224,25 +225,14 @@
         </section>
 
         <!-- Change Password Section -->
-        <section>
-            <h3>Change Password</h3>
-            <form action="ChangePasswordServlet" method="post"> <!-- Assuming you have a servlet to handle password change -->
-                <label for="currentPassword">Current Password:</label>
-                <input type="password" id="currentPassword" name="currentPassword">
-                <label for="newPassword">New Password:</label>
-                <input type="password" id="newPassword" name="newPassword">
-                <label for="confirmPassword">Confirm New Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword">
-                <button type="submit">Change Password</button>
-            </form>
-        </section>
+       
 
         <!-- Recent Activity Section -->
         <section>
             <h3>Recent Activity</h3>
             <% 
                 // Fetch recent activity (products) where the seller_id matches the user's ID
-                String productsSQL = "SELECT * FROM products WHERE seller_id = ?";
+                String productsSQL = "SELECT * FROM products WHERE seller_id = ? AND sold_out = false";
                 PreparedStatement productsStmt = conn.prepareStatement(productsSQL);
                 productsStmt.setString(1, user_id);
                 ResultSet productsRS = productsStmt.executeQuery();%>
@@ -250,7 +240,7 @@
                     <% 
                         while (productsRS.next()) {
                             int productId = productsRS.getInt("product_id"); // Get product ID for each product
-                            PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ?");
+                            PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ? ");
                             pstmtImage.setInt(1, productId);
                             ResultSet rsImage = pstmtImage.executeQuery();
                             String imgBase64 = "";
@@ -270,7 +260,8 @@
                             <p class="card-text"><%= productsRS.getString("description") %><a href="" class="btn btn-link">more</a></p>
                             <p class="card-text">Price: $<%= productsRS.getDouble("price") %></p>
 
-                            <button class="sold-out-button">Sold Out</button>
+                            <button class="sold-out-button" onclick="showSoldOutDialog('<%= productId %>', <%= productsRS.getDouble("price") %>);">Sold Out</button>
+
                         </div>
                     </div>
                     <% } // End of while loop %>
@@ -278,10 +269,7 @@
         </section>
 
         <!-- Saved Items Section -->
-        <section>
-            <h3>Saved Items</h3>
-            <!-- Display saved items here -->
-        </section>
+       
         <%
                 }
             } catch (SQLException e) {
@@ -301,7 +289,7 @@
         <span class="close-icon" onclick="closeSoldOutDialog()">&#10006;</span> <!-- Close icon -->
         <form action="TransactionServlet" method="POST" id="soldOutForm">
             <label for="product">Product ID:</label>
-            <input type="text" id="buyerId" name="productId" required>
+            <input type="text" id="productId" name="productId" required>
             <label for="buyerId">Buyer ID:</label>
             <input type="text" id="buyerId" name="buyerId" required>
 
@@ -310,13 +298,53 @@
             <button type="submit">Submit</button>
         </form>
     </div>
+
     
     <script>
         // Function to show the dialog box
-        function showSoldOutDialog() {
-            document.getElementById('soldOutDialog').style.display = 'block';
-        }
-        
+        function showSoldOutDialog(productId, price) {
+    // Ensure productId is not null or undefined
+    if (productId == null || productId === "") {
+        console.log("Product ID is invalid:", productId);
+        return;
+    }
+    
+    // Ensure price is not null or undefined
+    if (price == null || price === "") {
+        console.log("Price is invalid:", price);
+        return;
+    }
+    
+    console.log("Product ID:", productId);
+    console.log("Price:", price);
+    
+    // Convert productId to integer
+    var parsedProductId = parseInt(productId);
+    // Convert price to float
+    var parsedPrice = parseFloat(price);
+    
+    console.log("Parsed Product ID:", parsedProductId);
+    console.log("Parsed Price:", parsedPrice);
+    
+    // Check if conversion was successful
+    if (isNaN(parsedProductId)) {
+        console.log("Failed to parse Product ID:", productId);
+        return;
+    }
+    
+    if (isNaN(parsedPrice)) {
+        console.log("Failed to parse Price:", price);
+        return;
+    }
+    
+    // Set the parsed values in the dialog box
+    document.getElementById('productId').value = parsedProductId;
+    document.getElementById('closingPrice').value = parsedPrice;
+    document.getElementById('soldOutDialog').style.display = 'block';
+}
+
+
+
         // Function to handle form submission
         
         

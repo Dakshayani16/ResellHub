@@ -254,7 +254,7 @@ footer {
                                 <i class="fas fa-filter"></i>
                             </button>
                             <div id="filterDropdowns" class="dropdown-menu" aria-labelledby="filterIcon">
-                                <div class="dropdown-item" href="#">By Price - All</div>
+                                <div class="dropdown-item" data-category="All" href="#">By Price - All</div>
                                 
                                 <a class="dropdown-item subprice" name="priceRange" href="#" data-category="0,50">Price up to ₹50</a>
                                 <a class="dropdown-item subprice" name="priceRange" href="#" data-category="50,100">Price ₹50 - ₹100</a>
@@ -312,8 +312,9 @@ footer {
                    while (rsProducts.next()) {
                        int productId = rsProducts.getInt("product_id");
 
-                       PreparedStatement pstmtProductDetails = conn.prepareStatement("SELECT product_name, price, description FROM Products WHERE product_id = ?");
-                       pstmtProductDetails.setInt(1, productId);
+                       PreparedStatement pstmtProductDetails = conn.prepareStatement("SELECT product_name, price, description FROM Products WHERE product_id = ? AND sold_out = false");
+pstmtProductDetails.setInt(1, productId);
+
                        ResultSet rsProductDetails = pstmtProductDetails.executeQuery();
 
                        if (rsProductDetails.next()) {
@@ -356,7 +357,7 @@ footer {
            </div>
            <div class="row justify-content-end">
                <div class="col-auto">
-                   <a href="listing.jsp?category=<%= categoryId %>" class="btn btn-link">More</a>
+                   <a href="listings.jsp?category=<%= categoryId %>" class="btn btn-link">More</a>
                </div>
            </div>
            <%  
@@ -443,6 +444,32 @@ footer {
     });
 });
 
+
+
 </script>
+<script>
+    function redirectToCategory(categoryName) {
+        const encodedCategoryName = encodeURIComponent(categoryName);
+        window.location.href = `listings.jsp?category=${encodedCategoryName}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Attach event listener to all elements with class "category"
+        const dropdownItems = document.querySelectorAll(".category");
+        dropdownItems.forEach(item => {
+            item.addEventListener("click", function (e) {
+                e.preventDefault(); // Prevent the default behavior of the link
+                
+                // Get the category name from the data-category attribute
+                const categoryName = this.getAttribute("data-category");
+                
+                // Redirect to listings.jsp with the selected category name
+                redirectToCategory(categoryName);
+            });
+        });
+    });
+  
+</script>
+
 </body>
 </html>

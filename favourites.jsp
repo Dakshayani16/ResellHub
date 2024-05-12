@@ -186,7 +186,8 @@
                 Connection conn = null;
                 try {
                     Class.forName("org.mariadb.jdbc.Driver");
-                    conn= DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                   // conn= DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                    conn= DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
                     String userID = (String)session.getAttribute("userID");
                     PreparedStatement pstmtFavourites = conn.prepareStatement("SELECT product_id FROM favourites WHERE user_id = ?");
                     pstmtFavourites.setString(1, userID);
