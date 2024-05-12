@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -213,7 +215,7 @@ try {
     var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
     chart.draw(data, options);
   }
-  
+
 </script>
 <%
 } catch (Exception e) {
@@ -225,39 +227,62 @@ try {
     if (conn != null) conn.close();
 }
 %>
+<%
+Connection conn1 = null;
+Statement stmt = null;
+ResultSet rs1 = null;
+
+        // Initialize a map to store branch-wise user data
+        Map<String, Integer> branchUsers = new HashMap<>();
+
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+
+            String sql = "SELECT branch, COUNT(*) AS total_users FROM user GROUP BY branch";
+            stmt = conn1.createStatement();
+            rs1 = stmt.executeQuery(sql);
+
+            // Iterate through the result set and populate the branchUsers map
+            while (rs1.next()) {
+                String branch = rs1.getString("branch");
+                int totalUsers = rs1.getInt("total_users");
+                branchUsers.put(branch, totalUsers);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs1 != null) rs1.close();
+            if (stmt != null) stmt.close();
+            if (conn1 != null) conn1.close();
+        }
+    %>
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    google.charts.load("current", {packages:['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ["Element", "Density", { role: "style" } ],
-        ["Copper", 8.94, "#b87333"],
-        ["Silver", 10.49, "silver"],
-        ["Gold", 19.30, "gold"],
-        ["Platinum", 21.45, "color: #e5e4e2"]
-      ]);
+    <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Branch');
+        data.addColumn('number', 'Total Users');
 
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
+        // Populate data rows using Java variables
+        <% for (Map.Entry<String, Integer> entry : branchUsers.entrySet()) { %>
+            data.addRow(['<%= entry.getKey() %>', <%= entry.getValue() %>]);
+        <% } %>
 
-      var options = {
-        title: "Density of Precious Metals, in g/cm^3",
-        width: 600,
-        height: 400,
-        bar: {groupWidth: "95%"},
-        legend: { position: "none" },
-      };
-      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-      chart.draw(view, options);
-  }
-  </script>
+            var options = {
+                title: "Number of Users in Each Branch",
+                width: 600,
+                height: 400,
+                bar: {groupWidth: "95%"},
+                legend: { position: "none" },
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+            chart.draw(data, options);
+        }
+    </script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -281,9 +306,13 @@ try {
             <h2>Welcome Admin</h2>
             <p>Get insights on Resell Hub working!</p>
         </div>
+
     </section>
-    <div id="chart_div"></div>
-    <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+    <div classes="container">
+        <div id="chart_div"></div>
+        <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+
+    </div>
    
    
 <%-- Dashboard --%>
