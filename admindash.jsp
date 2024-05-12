@@ -218,15 +218,21 @@ try {
 
 </script>
 <%
-} catch (Exception e) {
+}
+catch (Exception e) {
     e.printStackTrace();
-} finally {
+} finally{
     // Close resources
     if (rs != null) rs.close();
     if (pstmt != null) pstmt.close();
     if (conn != null) conn.close();
 }
 %>
+
+
+<!-- HTML for the chart -->
+
+
 <%
 Connection conn1 = null;
 Statement stmt = null;
@@ -239,9 +245,9 @@ ResultSet rs1 = null;
             Class.forName("org.mariadb.jdbc.Driver");
             conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
 
-            String sql = "SELECT branch, COUNT(*) AS total_users FROM user GROUP BY branch";
+            String sql2 = "SELECT branch, COUNT(*) AS total_users FROM user GROUP BY branch";
             stmt = conn1.createStatement();
-            rs1 = stmt.executeQuery(sql);
+            rs1 = stmt.executeQuery(sql2);
 
             // Iterate through the result set and populate the branchUsers map
             while (rs1.next()) {
@@ -283,6 +289,74 @@ ResultSet rs1 = null;
             chart.draw(data, options);
         }
     </script>
+
+
+<!-- -------------------------------- -->
+<%
+Connection conn2 = null;
+Statement stmt2 = null;
+ResultSet rs2 = null;
+
+// Initialize a map to store date-wise product count data
+Map<String, Integer> productCounts = new HashMap<>();
+
+try {
+    Class.forName("org.mariadb.jdbc.Driver");
+    conn2 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+
+    String sql2 = "SELECT DATE(posted_at) AS date, COUNT(*) AS total_product FROM products GROUP BY DATE(posted_at)";
+    stmt2 = conn2.createStatement();
+    rs2 = stmt2.executeQuery(sql2);
+
+    // Iterate through the result set and populate the productCounts map
+    while (rs2.next()) {
+        String date = rs2.getString("date");
+        int totalProduct = rs2.getInt("total_product");
+        productCounts.put(date, totalProduct);
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    // Close resources
+    try {
+        if (rs2 != null) rs2.close();
+        if (stmt2 != null) stmt2.close();
+        if (conn2 != null) conn2.close();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+}
+%>
+
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawLineChart);
+
+    function drawLineChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Date');
+        data.addColumn('number', 'Total Products');
+
+        <% for (Map.Entry<String, Integer> entry : productCounts.entrySet()) { %>
+            data.addRow(['<%= entry.getKey() %>', <%= entry.getValue() %>]);
+        <% } %>
+
+        var options = {
+            title: 'Total Products Posted Over Time',
+            width: 800,
+            height: 600,
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+    }
+</script>
+
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -311,6 +385,7 @@ ResultSet rs1 = null;
     <div classes="container">
         <div id="chart_div"></div>
         <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+        <div id="curve_chart" style="width: 100%; height: 500px;"></div>
 
     </div>
    
