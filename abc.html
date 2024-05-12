@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download PDF</title>
+</head>
+<body>
+<div id="content">
+  <!-- Content fetched from the web page will be displayed here -->
+</div>
+<button onclick="addDivAndDownload()">Add Content and Download PDF</button>
+
+<script>
+function addDivAndDownload() {
+  const contentDiv = document.getElementById('content');
+  // Create a new div with image and Lorem text
+  const newDiv = document.createElement('div');
+  newDiv.style.border = '1px solid #ccc';
+  newDiv.style.padding = '10px';
+  const img = document.createElement('img');
+  img.src = 'https://via.placeholder.com/150'; // Replace with image URL
+  img.style.display = 'block';
+  img.style.marginBottom = '10px';
+  newDiv.appendChild(img);
+  const loremText = document.createTextNode('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.');
+  newDiv.appendChild(loremText);
+  contentDiv.appendChild(newDiv);
+  
+  // Download the content as PDF
+  htmlToPdf(contentDiv.innerHTML);
+}
+
+function htmlToPdf(htmlContent) {
+  const formData = new FormData();
+  formData.append('htmlContent', htmlContent);
+
+  fetch('/convert-to-pdf', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.blob())
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'output.pdf';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  })
+  .catch(error => console.error('Error converting HTML to PDF:', error));
+}
+</script>
+</body>
+</html>
