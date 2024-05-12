@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -150,6 +154,112 @@
             padding: 100px 0;
         }
     </style>
+    <!-- Include Google Charts library -->
+
+
+
+    <%
+// Java code to fetch category and no_of_items from product_category table
+Connection conn = null;
+PreparedStatement pstmt = null;
+ResultSet rs = null;
+
+try {
+    Class.forName("org.mariadb.jdbc.Driver");
+    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+
+    // SQL query to retrieve category and no_of_items from product_category table
+    String sql = "SELECT category, no_of_items FROM product_category";
+    pstmt = conn.prepareStatement(sql);
+    rs = pstmt.executeQuery();
+
+    // Lists to store category and no_of_items
+    List<String> categories = new ArrayList<>();
+    List<Integer> itemCounts = new ArrayList<>();
+
+    // Fetching data from result set
+    while (rs.next()) {
+        categories.add(rs.getString("category"));
+        itemCounts.add(rs.getInt("no_of_items"));
+    }
+%>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load("current", {packages:["corechart"]});
+  google.charts.setOnLoadCallback(drawChart);
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    // Create the data table
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Category');
+    data.addColumn('number', 'No. of Items');
+
+    // Populate data rows using Java variables
+    <% for (int i = 0; i < categories.size(); i++) { %>
+        data.addRow(['<%= categories.get(i) %>', <%= itemCounts.get(i) %>]);
+    <% } %>
+
+    // Set chart options
+    var options = {
+      'title': 'Number of Items in Each Category',
+      'width': 600,
+      'height': 400,
+      is3D: true,
+    };
+
+    // Instantiate and draw the chart
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+  
+</script>
+<%
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    // Close resources
+    if (rs != null) rs.close();
+    if (pstmt != null) pstmt.close();
+    if (conn != null) conn.close();
+}
+%>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ["Element", "Density", { role: "style" } ],
+        ["Copper", 8.94, "#b87333"],
+        ["Silver", 10.49, "silver"],
+        ["Gold", 19.30, "gold"],
+        ["Platinum", 21.45, "color: #e5e4e2"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Density of Precious Metals, in g/cm^3",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+  }
+  </script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -178,7 +288,10 @@
             <p>Get insights on Resell Hub working!</p>
         </div>
     </section>
-
+    <div id="chart_div"></div>
+    <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+   
+   
 <%-- Dashboard --%>
     
 

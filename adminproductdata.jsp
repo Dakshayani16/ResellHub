@@ -210,8 +210,9 @@
                     try {
                         // Connect to the database
                         Class.forName("org.mariadb.jdbc.Driver");
-                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-
+                       // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                       conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                   
                         // Execute the query to fetch product records
                         String query = "SELECT p.product_id, p.product_name, p.seller_id, p.price, p.posted_at, p.condition_id, p.sold_out, AVG(r.rating) AS rating " +
                                         "FROM products p " +

@@ -287,8 +287,8 @@ body {
                Connection conn = null;
                try {
                    Class.forName("org.mariadb.jdbc.Driver");
-                  conn= DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-                    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                 // conn= DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                     conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
                    
                    Statement stmt = conn.createStatement();
                    ResultSet rs = stmt.executeQuery("SELECT category_id, category, no_of_items FROM product_category");
@@ -449,29 +449,6 @@ pstmtProductDetails.setInt(1, productId);
 
 
 
-</script>
-<script>
-    function redirectToCategory(categoryName) {
-        const encodedCategoryName = encodeURIComponent(categoryName);
-        window.location.href = `listings.jsp?category=${encodedCategoryName}`;
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        // Attach event listener to all elements with class "category"
-        const dropdownItems = document.querySelectorAll(".category");
-        dropdownItems.forEach(item => {
-            item.addEventListener("click", function (e) {
-                e.preventDefault(); // Prevent the default behavior of the link
-                
-                // Get the category name from the data-category attribute
-                const categoryName = this.getAttribute("data-category");
-                
-                // Redirect to listings.jsp with the selected category name
-                redirectToCategory(categoryName);
-            });
-        });
-    });
-  
 </script>
 
 </body>
