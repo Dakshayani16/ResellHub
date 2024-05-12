@@ -78,11 +78,14 @@
 
         /* Navigation Bar Styles */
         nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
         nav ul {
             list-style: none;
@@ -97,16 +100,15 @@
             margin-left: 0; /* No margin for the first child */
         }
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
-            font-family: 'Poppins', sans-serif;
         }
         nav h1 {
             margin: 0;
             display: inline;
             float: left; /* Aligning the logo to the left */
-            font-family: 'Poppins', sans-serif;
         }
+
 
         /* Banner Section Styles */
         #banner {
@@ -147,11 +149,11 @@
 
         /* Footer Styles */
         footer {
-            background-color: #333;
-            color: #fff;
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
             text-align: center;
-            padding: 10px 0;
-            font-family: 'Poppins', sans-serif;
+            padding: 100px 0;
         }
     </style>
     <!-- Include Google Charts library -->
@@ -362,7 +364,9 @@ try {
     <!-- Navigation Bar -->
     <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+            <h1><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="admindash.jsp">Dashboard</a></li>
                 <li><a href="adminuserdata.jsp">Users</a></li>
@@ -373,6 +377,8 @@ try {
             </ul>
         </div>
     </nav>
+
+    <br><br><br><br><br><br>
 
     <!-- Banner Section -->
     <section id="banner">
