@@ -61,6 +61,7 @@ public class AddProduct extends HttpServlet {
             // conn =
             // DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub",
             // "root", "AnishaNemade");
+>>>>>>> 5a140f044a01132d89242520057bb64ba28fd54b
             LOGGER.log(Level.INFO, "Database connection established successfully.");
 
             String insertProductQuery = "INSERT INTO products (product_name, seller_id,description, price) VALUES (?, ?, ?, ?);";

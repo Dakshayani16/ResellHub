@@ -320,13 +320,14 @@ body {
 pstmtProductDetails.setInt(1, productId);
 
                        ResultSet rsProductDetails = pstmtProductDetails.executeQuery();
-
+                        boolean more=false;
                        if (rsProductDetails.next()) {
                            String productname = rsProductDetails.getString("product_name");
                            int price = rsProductDetails.getInt("price");
                            String description = rsProductDetails.getString("description");
                            if (description.length() > 20) {
                                description = description.substring(0, 20) + "...";
+                               more=true;
                            }
 
                            PreparedStatement pstmtImage = conn.prepareStatement("SELECT image FROM Images WHERE product_id = ?");
@@ -336,10 +337,16 @@ pstmtProductDetails.setInt(1, productId);
                            if (rsImage.next()) {
                                Blob imageBlob = rsImage.getBlob("image");
                                if(imageBlob!=null){
+<<<<<<< HEAD
+                               byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
+                               imgBase64 = Base64.getEncoder().encodeToString(imgData);
+                               }
+=======
                                 byte[] imgData = imageBlob.getBytes(1, (int) imageBlob.length());
                                imgBase64 = Base64.getEncoder().encodeToString(imgData);
                                }
                                
+>>>>>>> 5a140f044a01132d89242520057bb64ba28fd54b
                            }
                %>
                <!-- Card for product -->
@@ -348,8 +355,13 @@ pstmtProductDetails.setInt(1, productId);
                     <img src="data:image/png;base64, <%= imgBase64 %>" class="card-img-top" alt="Product Image">
                     <div class="card-body">
                         <h5 class="card-title"><%= productname %></h5>
+<<<<<<< HEAD
+                        <p class="card-text"><%= description %> <% if(more){ %><a href="singleItem.jsp?item=<%= productId %>" class="btn btn-link">more</a><%}%></p>
+                        <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-primary">Rs. <%= price %></a>
+=======
                         <p class="card-text"><%= description %><a href="" class="btn btn-link">more</a></p>
                         <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-warning">Rs. <%= price %></a>
+>>>>>>> 5a140f044a01132d89242520057bb64ba28fd54b
                     </div>
                 </div>
             </div>

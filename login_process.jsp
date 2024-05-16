@@ -4,6 +4,27 @@
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
+Connection conn = null;
+PreparedStatement stmt = null;
+ResultSet rs = null;
+PreparedStatement stmt2 = null;
+ResultSet rs2 = null;
+if(username.equals("admin") && password.equals("admin@123")){
+
+    
+}else{
+try {
+    Class.forName("org.mariadb.jdbc.Driver");
+   conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+    stmt = conn.prepareStatement("SELECT * FROM credentials WHERE username = ? AND password = ?");
+    stmt.setString(1, username);
+    stmt.setString(2, password);
+    rs = stmt.executeQuery();
+    stmt2 = conn.prepareStatement("SELECT * FROM user WHERE username = ?;");
+    stmt2.setString(1, username);
+    // stmt2.setString(2, password);
+    rs2 = stmt2.executeQuery();
     Connection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -53,4 +74,12 @@
             }
 
     }
+} catch (Exception e) {
+    out.println("An error occurred: " + e.getMessage());
+} finally {
+    if (rs != null) rs.close();
+    if (stmt != null) stmt.close();
+    if (conn != null) conn.close();
+}
+}
 %>
