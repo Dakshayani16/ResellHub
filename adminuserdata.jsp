@@ -211,8 +211,8 @@
                     try {
                         // Connect to the database
                         Class.forName("org.mariadb.jdbc.Driver");
-                        conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-                        // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                        //conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                         conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
                    
                         // Execute the query to fetch user records
                         String query = "SELECT * FROM user";

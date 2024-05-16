@@ -167,6 +167,26 @@
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
         }
         .dialog button {
             padding: 10px 20px;
@@ -235,7 +255,7 @@
             try {
                 String user_id = (String) session.getAttribute("userID"); // Cast to String
               //  conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
                 String sql = "SELECT category, no_of_items FROM product_category";
                 stmt = conn.prepareStatement(sql);
                 rs = stmt.executeQuery();
@@ -258,7 +278,7 @@
                     String sellerId = (String) session.getAttribute("userID"); // Cast to String
                     // Establish connection to the database
                     Class.forName("org.mariadb.jdbc.Driver"); // Load the MariaDB JDBC driver
-                    conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                    conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
         
                     // Query to fetch total number of products
                     String totalProductsQuery = "SELECT COUNT(*) AS total FROM products";
@@ -325,6 +345,55 @@
             rs = stmt.executeQuery();
             if (rs.next()) {
         %>
+        <h2>Transaction Table for Seller ID: <%= session.getAttribute("userID") %></h2>
+    <table>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Buyer ID</th>
+            <th>Product ID</th>
+            <!-- Add more columns as needed -->
+        </tr>
+        <%
+            Connection conn3 = null;
+            PreparedStatement stmt3 = null;
+            ResultSet rs3 = null;
+            try {
+                // Establish connection to the database
+                Class.forName("org.mariadb.jdbc.Driver");
+                conn3 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
+
+                // Query to fetch transactions for the seller ID
+                String sellerId = (String) session.getAttribute("userID");
+                String sql3 = "SELECT * FROM transactions1 WHERE seller_id = ?";
+                stmt3 = conn3.prepareStatement(sql3);
+                stmt3.setString(1, sellerId);
+                rs3 = stmt3.executeQuery();
+
+                // Iterate through the result set and display data in table rows
+                while (rs3.next()) {
+        %>
+        <tr>
+            <td><%= rs3.getString("transaction_id") %></td>
+            <td><%= rs3.getString("buyer_id") %></td>
+            <td><%= rs3.getString("product_id") %></td>
+            <!-- Add more columns as needed -->
+        </tr>
+        <%
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                // Close connections
+                try {
+                    if (rs3 != null) rs3.close();
+                    if (stmt3 != null) stmt3.close();
+                    if (conn3 != null) conn3.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        %>
+    </table>
         <!-- Display User Information -->
         <section>
             <h3 align="center">User Information</h3><br><hr>
@@ -367,7 +436,7 @@
                 productsStmt.setString(1, user_id);
                 ResultSet productsRS = productsStmt.executeQuery();
             %>
-            <div class="card-grid">
+            <div class="row">
                 <% 
                     while (productsRS.next()) {
                         int productId = productsRS.getInt("product_id"); // Get product ID for each product

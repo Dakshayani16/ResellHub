@@ -1,56 +1,67 @@
-<%@ page import="java.io.*,java.sql.*,java.util.*" %>
-<%@ page import="javax.servlet.http.*,javax.servlet.*" %>
-<%@ page import="org.apache.commons.fileupload.*,org.apache.commons.fileupload.disk.*,org.apache.commons.fileupload.servlet.*" %>
-<%@ page import="java.sql.Connection"%>
+<%@ page import="java.io.*,java.sql.*,javax.servlet.*,javax.servlet.http.*,java.util.*" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-// Database connection parameters
-String url = "jdbc:mariadb://localhost:3305/mydatabase";
-String user = "root";
-String password = "root";
+String product_name = request.getParameter("product_name");
+int price = Integer.parseInt(request.getParameter("price"));
+String description = request.getParameter("description");
+int user_id = Integer.parseInt((String) request.getSession().getAttribute("userID"));
 
-// Connection object
 Connection conn = null;
+PreparedStatement productStmt = null;
+PreparedStatement imageStmt = null;
 
 try {
-    // Create a connection to the database
-    Class.forName("com.mysql.jdbc.Driver");
-    conn = DriverManager.getConnection(url, user, password);
+    Class.forName("org.mariadb.jdbc.Driver");
+    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
 
-    // Get the uploaded file
-    FileItemFactory factory = new DiskFileItemFactory();
-    ServletFileUpload upload = new ServletFileUpload(factory);
-    List<FileItem> items = upload.parseRequest(request);
+    // Insert product
+    String insertProductQuery = "INSERT INTO products (product_name, seller_id, description, price) VALUES (?, ?, ?, ?);";
+    productStmt = conn.prepareStatement(insertProductQuery);
+    productStmt.setString(1, product_name);
+    productStmt.setInt(2, user_id);
+    productStmt.setString(3, description);
+    productStmt.setInt(4, price);
+    productStmt.executeUpdate();
 
-    // Iterate through the form items
-    for (FileItem item : items) {
-        if (!item.isFormField()) {
-            // Process file upload
-            String fileName = new File(item.getName()).getName();
-            InputStream inputStream = item.getInputStream();
-
-            // Insert the image into the database
-            String sql = "INSERT INTO images (product_id, image) VALUES (?, ?)";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, productId); // Set the product ID
-            statement.setBinaryStream(2, inputStream);
-
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                out.println("Image uploaded successfully.");
-            } else {
-                out.println("Failed to upload image.");
-            }
-        }
+    // Retrieve the generated product ID
+    ResultSet generatedKeys = productStmt.getGeneratedKeys();
+    int productId = 0;
+    if (generatedKeys.next()) {
+        productId = generatedKeys.getInt(1);
     }
+
+    // Insert image
+    Part filePart = request.getPart("image");
+    if (filePart != null) {
+        InputStream inputStream = filePart.getInputStream();
+        String insertImageQuery = "INSERT INTO images (product_id, image) VALUES (?, ?);";
+        imageStmt = conn.prepareStatement(insertImageQuery);
+        imageStmt.setInt(1, productId);
+        imageStmt.setBlob(2, inputStream);
+        imageStmt.executeUpdate();
+    } else {
+        throw new ServletException("No file uploaded or file size is zero.");
+    }
+
+    // Redirect to success page
+    response.sendRedirect("success.jsp");
 } catch (Exception e) {
-    out.println("Error: " + e.getMessage());
+    e.printStackTrace();
+    out.println("An error occurred: " + e.getMessage());
 } finally {
+    // Close resources
     try {
+        if (imageStmt != null) {
+            imageStmt.close();
+        }
+        if (productStmt != null) {
+            productStmt.close();
+        }
         if (conn != null) {
             conn.close();
         }
-    } catch (SQLException ex) {
-        out.println("Error: " + ex.getMessage());
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 }
 %>

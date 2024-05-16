@@ -27,7 +27,7 @@ public class TransactionServlet extends HttpServlet {
         String currentDate = sdf.format(new Date());
 
         // Database connection parameters
-        String url = "jdbc:mariadb://localhost:3305/mydatabase";
+        String url = "jdbc:mariadb://localhost:3305/resell_hub";
         String username = "root";
         String password = "root";
 

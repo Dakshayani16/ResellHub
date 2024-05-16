@@ -14,7 +14,7 @@
 		 Connection con = null;
 		ResultSet result=null;
 		try{Class.forName("org.mariadb.jdbc.Driver");
-        	con = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+        	con = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
 			// con = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
 		
 		}catch(Exception e){out.print(e+"con");}

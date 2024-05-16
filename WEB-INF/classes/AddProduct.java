@@ -57,7 +57,7 @@ public class AddProduct extends HttpServlet {
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "root");
+            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/resell_hub", "root", "root");
             // conn =
             // DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub",
             // "root", "AnishaNemade");
@@ -78,11 +78,10 @@ public class AddProduct extends HttpServlet {
             if (generatedKeys.next()) {
                 int productId = generatedKeys.getInt(1);
 
-                String insertProductConditionQuery = "INSERT INTO condition_of_product (buy_year,Used_for,description) VALUES (?,?, ?)";
+                String insertProductConditionQuery = "INSERT INTO condition_of_product (buy_year,description) VALUES (?,?)";
                 productStmt1 = conn.prepareStatement(insertProductConditionQuery, Statement.RETURN_GENERATED_KEYS);
                 productStmt1.setInt(1, buy_year);
-                productStmt1.setInt(2, usedFor);
-                productStmt1.setString(3, condition_description);
+                productStmt1.setString(2, condition_description);
                 int affectedRows = productStmt1.executeUpdate();
                 ResultSet generatedKey = productStmt1.getGeneratedKeys();
                 if (generatedKeys.next()) {
@@ -166,8 +165,8 @@ public class AddProduct extends HttpServlet {
             }
         }
 
-        // response.setIntHeader("Refresh", 5);
-        // response.sendRedirect("index.jsp");
+        response.setIntHeader("Refresh", 5);
+        response.sendRedirect("index.jsp");
     }
 
     private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
