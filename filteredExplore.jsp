@@ -15,212 +15,191 @@
     <!-- Google Fonts CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <!-- Internal CSS -->
-    <style>
-        /* Add your custom CSS styles here */
-        /* Dropdown Menu Styles */
-        .dropdown-menu {
-            display: none;
-            font-family: 'Poppins', sans-serif;
-            height: 40px; /* Set the height */
-            margin: 4px; /* Set the margin */
-        }
-    
-        .dropdown-menu.show {
-            display: block;
-        }
-    
-        .dropdown-submenu:hover .dropdown-menu {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 100%;
-        }
-    
-        .dropdown-submenu .dropdown-submenu:hover .dropdown-menu {
-            top: 0;
-            left: 100%;
-        }
-    
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-    
-        /* Navigation Bar Styles */
+   <style>
+    /* Add your custom CSS styles here */
+
+.dropdown-menu {
+    display: none;
+    font-family: 'Poppins', sans-serif;
+    height: 40px; /* Set the height */
+    margin: 4px; /* Set the margin */
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-submenu:hover .dropdown-menu {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 100%;
+}
+
+.dropdown-submenu .dropdown-submenu:hover .dropdown-menu {
+    top: 0;
+    left: 100%;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navigation Bar Styles */
+ /* Navigation Bar Styles */
         nav {
-            background-color: #333;
-            color: #fff;
-            padding: 30px 0;
+            background-color: #FFF; /* White background */
+            color: #000; /* Black font color */
+            padding: 20px 0;
             text-align: right;
-            font-family: 'Poppins', sans-serif;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
-    
         nav ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-    
         nav ul li {
             display: inline;
             margin-left: 20px; /* Adjusted from margin-right to margin-left */
         }
-    
         nav ul li:first-child {
             margin-left: 0; /* No margin for the first child */
         }
-    
         nav ul li a {
-            color: #fff;
+            color: #000; /* Black font color */
             text-decoration: none;
         }
-    
         nav h1 {
             margin: 0;
             display: inline;
             float: left; /* Aligning the logo to the left */
         }
-    
+
         /* Banner Section Styles */
         #banner {
-            background-color: #f4f4f4;
+            background-color: #FD5F04; /* Orange background color */
             padding: 50px 0;
             text-align: center;
+            color: #FFF; /* White font color */
         }
-    
         #banner h2 {
             margin: 0;
             font-size: 36px;
         }
-    
         #banner p {
             margin-top: 20px;
             font-size: 18px;
         }
-    
+
+        /* Search Section Styles */
+        #search {
+            background-color: #FD5F04; /* Orange background color */
+            padding: 20px 0;
+            text-align: center;
+            color: #FFF; /* White font color */
+        }
+        #search form {
+            display: inline-block;
+        }
+        #search input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #fff; /* White border */
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+        #search button {
+            background-color: #FFF; /* White background */
+            color: #FD5F04; /* Orange font color */
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            margin-right: 4px;
+        }
+
         /* Listings Section Styles */
-        #banner {
-    background-color: #f4f4f4;
-    padding: 50px 0;
-    text-align: center;
-}
+        #listings {
+            padding: 50px 0;
+        }
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+        .listing-item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .listing-item h3 {
+            margin-top: 10px;
+        }
+        .listing-item p {
+            margin-top: 5px;
+        }
+        .btn-warning {
+      color: #ffffff; /* Text color */
+      background-color: #FD5F04 !important; /* Orange background color */
+      border-color: #FD5F04 !important; /* Orange border color */
+    }
 
-#banner h2 {
-    margin: 0;
-    font-size: 36px;
-}
+    /* Hover state */
+    .btn-warning:hover {
+      color: #000000; /* Text color on hover */
+      background-color: #fe4d00 !important; /* Darker orange background color on hover */
+      border-color: #cc4d00 !important; /* Darker orange border color on hover */
+    }
 
-#banner p {
-    margin-top: 20px;
-    font-size: 18px;
-}
+        /* Footer Styles */
+        footer {
+            background-color: #FD5F04; 
+            height: 100px,
+            color: #000;
+            text-align: center;
+            padding: 100px 0;
+        }
 
-/* Search Section Styles */
-#search {
-    background-color: #f4f4f4;
-    padding: 20px 0;
-    text-align: center;
-}
-
-#searchForm {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#searchInput,
-#search button {
-    height: 40px; /* Set the height */
-    margin: 4px; /* Set the margin */
-    margin-top: 4px;
-}
-
-#searchInput {
-    padding: 10px;
-    width: 200px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-}
-
-#search button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-    margin-top: 4px;
-}
-
-.row{
-    align-items: center;
-    justify-content: center;
-}
-
-/* Listings Section Styles */
-#listings {
-    padding: 50px 0;
-}
-
-.listings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-gap: 20px;
-}
-
-.listing-item img {
-    max-width: 100%;
-    height: auto;
-}
-
-.listing-item h3 {
-    margin-top: 10px;
-}
-
-.listing-item p {
-    margin-top: 5px;
-}
-
-/* Footer Styles */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-}
     </style>
     
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav>
+      <nav>
         <div class="container">
-            <h1>VJTI Resell Hub</h1>
+        
+        
+         <h1><a href="explore.jsp"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+</svg></a><img src="https://t4.ftcdn.net/jpg/03/04/45/39/360_F_304453978_iDgX3VrXdHzgN4GrhLqgRxe1ILgEUUX3.jpg"  width=200 height=190>VJTI Resell Hub</h1>
+
+        
             <ul>
                 <li><a href="index.jsp">Home</a></li>
                 <li><a href="explore.jsp">Explore</a></li>
                 <li><a href="add_product.jsp">Post</a></li>
+
                 <li><a href="profile.jsp">My Account</a></li>
+
                 <% if(session.getAttribute("username")==null){ %>
                 <li><a href="login.jsp">Login</a></li>
-                <% }else{ %><li><a href="logout_process.jsp">Logout</a></li><% }%>
+                <% }else{ %><li><a href="conversations.jsp">Chats</a></li><li><a href="favourites.jsp">Favourites</a></li><li><a href="logout_process.jsp">Logout</a></li><% }%>
             </ul>
+
+        
         </div>
     </nav>
-
-    <!-- Banner Section -->
-    <section id="banner">
-        <div class="container">
-            <h2>Welcome to VJTI Resell Hub</h2>
-            <p>Buy and sell items near you. Discover great deals!</p>
-        </div>
-    </section>
+<br><br><br><br><br><br><br>
 
     <!-- Search Section -->
     
@@ -279,8 +258,8 @@ String priceRange = request.getParameter("priceRange");
                                 try {
                                     // Establish database connection
                                     Class.forName("org.mariadb.jdbc.Driver");
-                                     conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
-                                    // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                                    //  conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                                    conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
                                    // out.print(" ef"+category);
                                     if(category.equals("All") && priceRange.equals("All") && searchInput != null) {
                                        // out.print(" ef1"+category);
@@ -410,7 +389,7 @@ pstmt.setInt(4, categoryId);
         <div class="card-body">
             <h5 class="card-title"><%= productName %></h5>
             <p class="card-text"><%= description %></p>
-            <a href="#" class="btn btn-primary">Rs. <%= price %></a>
+            <a href="singleItem.jsp?item=<%= productId %>" class="btn btn-warning">Rs. <%= price %></a>
         </div>
     </div>
 </div>

@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+// import jakarta.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,7 +43,7 @@ public class AddProduct extends HttpServlet {
         int currentYear = LocalDate.now().getYear();
 
         // Calculate the number of years the product has been used
-        int usedFor = currentYear - buy_year;
+  
         String description = request.getParameter("description");
         String[] categories = request.getParameterValues("category");
         int condition_id = 0;
@@ -57,7 +57,7 @@ public class AddProduct extends HttpServlet {
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "root");
+            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
             // conn =
             // DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub",
             // "root", "AnishaNemade");
@@ -78,11 +78,11 @@ public class AddProduct extends HttpServlet {
             if (generatedKeys.next()) {
                 int productId = generatedKeys.getInt(1);
 
-                String insertProductConditionQuery = "INSERT INTO condition_of_product (buy_year,Used_for,description) VALUES (?,?, ?)";
+                String insertProductConditionQuery = "INSERT INTO condition_of_product (buy_year,description) VALUES (?,?)";
                 productStmt1 = conn.prepareStatement(insertProductConditionQuery, Statement.RETURN_GENERATED_KEYS);
                 productStmt1.setInt(1, buy_year);
-                productStmt1.setInt(2, usedFor);
-                productStmt1.setString(3, condition_description);
+                productStmt1.setString(2, condition_description);
+              
                 int affectedRows = productStmt1.executeUpdate();
                 ResultSet generatedKey = productStmt1.getGeneratedKeys();
                 if (generatedKeys.next()) {

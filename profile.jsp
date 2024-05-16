@@ -34,6 +34,7 @@
             color: #000; /* Black font color */
             padding: 20px 0;
             text-align: right;
+            
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -133,6 +134,22 @@
             cursor: not-allowed;
             transition: background-color 0.3s ease;
         }
+         .container {
+            display: flex;
+        }
+
+        .column {
+            flex: 1;
+            padding: 5px;
+            
+            box-sizing: border-box;
+        }
+
+        .content {
+            max-width: 100%;
+            max-height: 100%;
+         
+        }
         .sold-out-button:hover {
             background-color: #e60000;
         }
@@ -217,48 +234,35 @@
             </ul>
         </div>
     </nav>
-    <br><br><br><br><br><br><br>
-    <div class="container">
-        <section>
-            <h3 align="center">Recent Activities</h3><br><hr>
-        </section>
-    </div>
-
+    <br><br>
+    
 
     <!-- Main Content Section -->
-    <div class="container-c">
+    
         <%
             // Fetch user information from the database
             Connection conn = null;
             PreparedStatement stmt = null;
             ResultSet rs = null;
             try {
+                Class.forName("org.mariadb.jdbc.Driver");
                 String user_id = (String) session.getAttribute("userID"); // Cast to String
-              //  conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
-                conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
-                String sql = "SELECT category, no_of_items FROM product_category";
-                stmt = conn.prepareStatement(sql);
-                rs = stmt.executeQuery();
-                // Lists to store category and no_of_items
-                List<String> categories = new ArrayList<>();
-                List<Integer> itemCounts = new ArrayList<>();
-                // Fetching data from result set
-                while (rs.next()) {
-                    categories.add(rs.getString("category"));
-                    itemCounts.add(rs.getInt("no_of_items"));
-                }
+               conn = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                // conn = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                
         %>
-        <div class="container-c">
+     
             <%
                 // Fetch user information from the database
                 Connection conn1 = null;
                 PreparedStatement stmt1 = null;
                 ResultSet rs1 = null;
+                int transactionCount=0, userCount=0,productCount=0;
                 try {
                     String sellerId = (String) session.getAttribute("userID"); // Cast to String
                     // Establish connection to the database
                     Class.forName("org.mariadb.jdbc.Driver"); // Load the MariaDB JDBC driver
-                    conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3305/mydatabase", "root", "root");
+                    conn1 = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
         
                     // Query to fetch total number of products
                     String totalProductsQuery = "SELECT COUNT(*) AS total FROM products";
@@ -278,8 +282,31 @@
                     if (rs1.next()) {
                         sellerProducts = rs1.getInt("seller_products");
                     }
+        
+                    String transactionQuery = "SELECT COUNT(*) AS transaction_count FROM transactions WHERE product_id IN (SELECT product_id FROM products WHERE seller_id = "+session.getAttribute("userID")+");";
+       stmt1 = conn1.prepareStatement(transactionQuery);
+        rs = stmt1.executeQuery();
+        if (rs.next()) {
+            transactionCount = rs.getInt("transaction_count");
+        }
+
+        // Query to get user count
+        String userQuery = "SELECT COUNT(*) AS user_count FROM transactions where buyer_id= "+ session.getAttribute("userID")+";";
+        stmt1 = conn1.prepareStatement(userQuery);
+        rs = stmt1.executeQuery();
+        if (rs.next()) {
+            userCount = rs.getInt("user_count");
+        }
+
+        // Query to get product count
+        String productQuery = "SELECT COUNT(*) AS product_count FROM products where seller_id= "+session.getAttribute("userID")+";";
+        stmt1 = conn1.prepareStatement(productQuery);
+        rs = stmt1.executeQuery();
+        if (rs.next()) {
+            productCount = rs.getInt("product_count");
+        }
             %>
-            <div id="chart_div"></div>
+           
         
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
@@ -295,8 +322,8 @@
         
                     var options = {
                         'title': 'Products Posted by Seller vs. Other Products',
-                        'width': 600,
-                        'height': 400,
+                        'width': 450,
+                        'height': 500,
                         is3D: true
                     };
         
@@ -304,7 +331,73 @@
                     chart.draw(data, options);
                 }
             </script>
+
+
+
+
+            <%   
+            Map<String, Double> productRatings = new HashMap<>();
+            PreparedStatement pstmt = null;
+
+            
+    pstmt = conn.prepareStatement("SELECT product_id, product_name FROM products WHERE seller_id = "+session.getAttribute("userID"));
+     // Assuming the session attribute name is "userID"
+    rs = pstmt.executeQuery();
+
+    // Iterate through the product IDs and names
+    while (rs.next()) {
+        String productId = rs.getString("product_id");
+        String productName = rs.getString("product_name");
+
+        // Calculate the average rating for each product using the reviews table
+        String avgRatingQuery = "SELECT AVG(rating) AS avg_rating FROM reviews WHERE product_id = ?";
+        PreparedStatement avgRatingStmt = conn.prepareStatement(avgRatingQuery);
+        avgRatingStmt.setString(1, productId);
+        ResultSet avgRatingRs = avgRatingStmt.executeQuery();
+
+        // Check if there are any reviews for the product
+        if (avgRatingRs.next()) {
+            double avgRating = avgRatingRs.getDouble("avg_rating");
+            // Add the product name and its average rating to the map
+            productRatings.put(productName, avgRating);
+        } else {
+            // If there are no reviews for the product, set the average rating to 0
+            productRatings.put(productName, 0.0);
+        }
+    }
+
+
+            %>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawLineChart);
+
+    function drawLineChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Product');
+        data.addColumn('number', 'Average Rating');
+
+        <% for (Map.Entry<String, Double> entry : productRatings.entrySet()) { %>
+            data.addRow(['<%= entry.getKey() %>', <%= entry.getValue() %>]);
+        <% } %>
+
+        var options = {
+            title: 'Average Ratings for Products',
+            width: 550,
+            height: 500,
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+    }
+</script>
             <% } catch (Exception e) {
+                out.print(e+"");
                 e.printStackTrace();
             } finally {
                 // Close connections
@@ -313,47 +406,215 @@
                     if (stmt1 != null) stmt1.close();
                     if (conn1 != null) conn1.close();
                 } catch (SQLException e) {
+                      out.print(e+"");
                     e.printStackTrace();
                 }
             } %>
-        </div>
         
-        <%
-            String sql2 = "SELECT * FROM user WHERE user_id = ?";
-            stmt = conn.prepareStatement(sql2);
-            stmt.setString(1, user_id);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
-        %>
-        <!-- Display User Information -->
-        <section>
-            <h3 align="center">User Information</h3><br><hr>
-            <div class="form-group">
-                <label for="firstName">First Name:</label>
-                <input type="text" class="form-control" id="firstName" value="<%= rs.getString("first_name") %>" disabled>
+        
+       
+ <script>
+function convertToPdfAndDownload() {
+  const contentDiv = document.getElementById('content');
+contentDiv.style.width = '1000px'; // Adjust width as needed
+  contentDiv.style.height = '800px';
+  const options = {
+    filename: 'output.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { format: 'a4', orientation: 'landscape' } // Set orientation to 'landscape' for wider page
+  };
+
+  // Use html2pdf with custom configuration
+  html2pdf()
+    .from(contentDiv)
+    .set(options)
+    .save();
+    
+}
+</script>
+<h3 class="text-center">Recent Activities</h3>
+<hr>
+<div class="container">
+    <!-- Cards -->
+    <div class="row">
+        <div class="col">
+            <div class="card text-bg-light mb-2">
+                <div class="card-header">Products Added</div>
+                <div class="card-body">
+                    <h2 class="card-title text-center"><%= productCount %></h2>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="middleName">Middle Name:</label>
-                <input type="text" class="form-control" id="middleName" value="<%= rs.getString("middle_name") %>" disabled>
+        </div>
+        <div class="col">
+            <div class="card text-bg-light mb-2">
+                <div class="card-header">Products Bought</div>
+                <div class="card-body">
+                    <h2 class="card-title text-center"><%= userCount %></h2>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="lastName">Last Name:</label>
-                <input type="text" class="form-control" id="lastName" value="<%= rs.getString("last_name") %>" disabled>
+        </div>
+        <div class="col">
+            <div class="card text-bg-light mb-2">
+                <div class="card-header">Products Sold</div>
+                <div class="card-body">
+                    <h2 class="card-title text-center"><%= transactionCount %></h2>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" value="<%= rs.getString("email") %>" disabled>
-            </div>
-            <div class="form-group">
-                <label for="contactNo">Contact No:</label>
-                <input type="text" class="form-control" id="contactNo" value="<%= rs.getString("contact_no") %>" disabled>
-            </div>
-            <div class="form-group">
-                <label for="branch">Branch:</label>
-                <input type="text" class="form-control" id="branch" value="<%= rs.getString("branch") %>" disabled>
-            </div>
-        </section>
+        </div>
     </div>
+    <!-- Charts -->
+    <div class="row">
+        <div class="col">
+            <div id="chart_div"></div>
+        </div>
+        <div class="col">
+            <div id="curve_chart"></div>
+        </div>
+    </div>
+    <!-- Transaction Table -->
+    <div class="row">
+        <div class="col">
+            <h5 class="mt-4">Your Transactions</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Buyer</th>
+                        <th>Product</th>
+                        <th>Close Price</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                        Connection conn3 = null;
+                        PreparedStatement stmt3 = null;
+                        ResultSet rs3 = null;
+                        try {
+                            // Establish connection to the database
+                            Class.forName("org.mariadb.jdbc.Driver");
+                            conn3 = DriverManager.getConnection("jdbc:mariadb://localhost:3307/resell_hub", "root", "AnishaNemade");
+                            // Query to fetch transactions for the seller ID
+                            String sellerId = (String) session.getAttribute("userID");
+                            String sql3 = "SELECT * FROM transactions WHERE seller_id = ?";
+                            stmt3 = conn3.prepareStatement(sql3);
+                            stmt3.setString(1, sellerId);
+                            rs3 = stmt3.executeQuery();
+                            // Iterate through the result set and display data in table rows
+                            while (rs3.next()) {
+                                int transaction_id = rs3.getInt("transaction_id");
+                                int buyer_id = rs3.getInt("buyer_id");
+                                int product_id = rs3.getInt("product_id");
+                                int close_price = rs3.getInt("close_price");
+                                String date = rs3.getString("date"); // Assuming date is stored as a String
+                                
+                                // Get buyer name from user table
+                                PreparedStatement buyerStmt = conn3.prepareStatement("SELECT first_name, last_name FROM user WHERE user_id = ?");
+                                buyerStmt.setInt(1, buyer_id);
+                                ResultSet buyerResult = buyerStmt.executeQuery();
+                                String buyerName = "";
+                                if (buyerResult.next()) {
+                                    buyerName = buyerResult.getString("first_name") + " " + buyerResult.getString("last_name");
+                                }
+                                // Get product name from products table
+                                PreparedStatement productStmt = conn3.prepareStatement("SELECT product_name FROM products WHERE product_id = ?");
+                                productStmt.setInt(1, product_id);
+                                ResultSet productResult = productStmt.executeQuery();
+                                String productName = "";
+                                if (productResult.next()) {
+                                    productName = productResult.getString("product_name");
+                                }
+                    %>
+                    <tbody>
+                        <td><%= transaction_id %></td>
+                        <td><%= buyerName %></td>
+                        <td><%= productName %></td>
+                        <td><%= close_price %></td>
+                        <td><%= date %></td>
+                    </tbody>
+<% } }catch(Exception e){
+    out.print(e+"");
+} %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br>
+<div class="d-grid gap-2 col-6 mx-auto">
+    <button class="btn btn-warning" onclick="convertToPdfAndDownload()">Download PDF</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<br><br>
+   <br><br><br>
+
+
+
+
+
+      
+        <!-- Display User Information -->
+       <section>
+                    <h3 align="center">User Information</h3>
+                    <br><hr>
+                    <form action="update_user.jsp" method="POST" id="userUpdateForm">
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" class="form-control" name="firstName" id="firstName" value="<%= rs.getString("first_name") %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="middleName">Middle Name:</label>
+                        <input type="text" class="form-control" name="middleName" id="middleName" value="<%= rs.getString("middle_name") %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" class="form-control" name="lastName" id="lastName" value="<%= rs.getString("last_name") %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" name="email" id="email" value="<%= rs.getString("email") %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNo">Contact No:</label>
+                        <input type="text" class="form-control" name="contactNo" id="contactNo" value="<%= rs.getString("contact_no") %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="branch">Branch:</label>
+                        <input type="text" class="form-control" name="branch" id="branch" value="<%= rs.getString("branch") %>" disabled>
+                    </div>
+                    <br>
+                    <!-- Edit and Update Buttons -->
+                    <button type="button" id='editBtn' class="btn btn-warning btn-lg" onclick="enableEdit()">Edit</button>
+                    <button type="submit" id='updateBtn' class="btn btn-warning btn-lg" onclick="updateUser()" disabled>Update</button>
+                    </form>
+                </section>
+
+                <!-- JavaScript for enabling editing and updating user information -->
+                <script>
+                    function enableEdit() {
+                        var inputs = document.getElementsByTagName('input');
+                        for (var i = 0; i < inputs.length; i++) {
+                            inputs[i].removeAttribute('disabled');
+                        }
+                        document.getElementById('updateBtn').removeAttribute('disabled');
+                        // document.getElementById('updatelink').removeAttribute('disabled');
+                        document.getElementById('editBtn').setAttribute('disabled', 'disabled');
+                    }
+
+                    function updateUser() {
+                        // Here you can submit the form data to update_user.jsp
+                        // For simplicity, let's just disable the inputs and update button again
+                        document.getElementById('userForm').submit();
+                        var inputs = document.getElementsByTagName('input');
+                        for (var i = 0; i < inputs.length; i++) {
+                            inputs[i].setAttribute('disabled', 'disabled');
+                        }
+                        document.getElementById('updateBtn').setAttribute('disabled', 'disabled');
+                        // document.getElementById('updatelink').setAttribute('disabled', 'disabled');
+                        document.getElementById('editBtn').removeAttribute('disabled');
+                    }
+                </script>
+    </div
     <br><br>
     <!-- Change Password Section -->
     <div class="container">
@@ -406,8 +667,9 @@
         <!-- Recent Activity Section -->
         <!-- Saved Items Section -->
         <%
-            }
+            
         } catch (SQLException e) {
+              out.print(e+"");
             e.printStackTrace();
         } finally {
             try {
@@ -415,6 +677,7 @@
                 if (stmt != null) stmt.close();
                 if (conn != null) conn.close();
             } catch (SQLException e) {
+                  out.print(e+"");
                 e.printStackTrace();
             }
         }

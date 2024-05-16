@@ -255,7 +255,7 @@
                     <td><%= productID %></td>
                     <td><%= productName %></td>
                     <td><%= sellerName %></td>
-                    <td>$<%= price %></td>
+                    <td>Rs.<%= price %></td>
                     <td><%= postedAtStr %></td>
                     <td><%= usedFor %></td>
                     <td><%= rating %></td>
